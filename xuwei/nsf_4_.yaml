@@ -1,0 +1,5 @@
+
+# 这里的 `<your-class-name>` 是您选择的 StorageClass 的名字。
+
+kubectl patch storageclass kubeflow-nfs-storage -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+
