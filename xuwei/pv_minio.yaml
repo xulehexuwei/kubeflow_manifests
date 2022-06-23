@@ -2,10 +2,7 @@ apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: pv-minio-1
-  labels:
-    type: local
 spec:
-  storageClassName: local
   capacity:
     storage: 20Gi
   accessModes:
