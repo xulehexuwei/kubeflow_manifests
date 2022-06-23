@@ -272,3 +272,15 @@ kubectl get pods -n kubeflow-user-example-com
 Pending都消除了，没消除的执行 `kubectl delete pod xxxpodname -n namespace` 删除pod，会自动重建。
 
 ## CrashLoopBackOff、Error 问题解决待续
+
+
+## 创建jupyter的时候返回 Could not find CSRF cookie XSRF-TOKEN 错误
+
+主要是由于jupyter-web-app的安全验证策略导致的，详细见https://github.com/kubeflow/kubeflow/issues/5803 解决方案环境变量加上APP_SECURE_COOKIES=false,修改见jupyter-web-app.yaml
+
+即在[该文件](./apps/jupyter/jupyter-web-app/upstream/base/params.env)中加上变量，然后重新执行命令
+
+Install the Jupyter Web App official Kubeflow component:
+```shell
+kustomize build apps/jupyter/jupyter-web-app/upstream/overlays/istio | kubectl apply -f -
+```
