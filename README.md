@@ -276,11 +276,17 @@ Pending都消除了，没消除的执行 `kubectl delete pod xxxpodname -n names
 
 ## 创建jupyter的时候返回 Could not find CSRF cookie XSRF-TOKEN 错误
 
-主要是由于jupyter-web-app的安全验证策略导致的，详细见https://github.com/kubeflow/kubeflow/issues/5803 解决方案环境变量加上APP_SECURE_COOKIES=false,修改见jupyter-web-app.yaml
+主要是由于jupyter-web-app的安全验证策略导致的，详细见https://github.com/kubeflow/kubeflow/issues/5803 
+解决方案环境变量加上APP_SECURE_COOKIES=false,修改见jupyter-web-app.yaml
 
-即在[该文件](./apps/jupyter/jupyter-web-app/upstream/base/params.env)中加上变量，然后重新执行命令
+即在[params.env](./apps/jupyter/jupyter-web-app/upstream/base/params.env)和
+[deployment.yaml](./apps/jupyter/jupyter-web-app/upstream/base/deployment.yaml)中加上变量APP_SECURE_COOKIES=false，
+然后重新执行命令
 
-Install the Jupyter Web App official Kubeflow component:
 ```shell
 kustomize build apps/jupyter/jupyter-web-app/upstream/overlays/istio | kubectl apply -f -
+
+kubectl delete pod jupyter-web-app-deployment-75b9fcb878-5kgzx -n kubeflow
+
+# 删除后会自动重建，等重建完就好了
 ```
