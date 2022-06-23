@@ -1,0 +1,14 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: autonomy-vol-1
+  namespace: kubeflow-user-example-com
+spec:
+  storageClassName: kubeflow-nfs-storage
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  nfs:
+    server: 10.250.10.61
+    path: /home/xuwei/kubeflow/nfs
