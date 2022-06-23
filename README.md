@@ -290,3 +290,54 @@ kubectl delete pod jupyter-web-app-deployment-75b9fcb878-5kgzx -n kubeflow
 
 # 删除后会自动重建，等重建完就好了
 ```
+
+## 通过notebook 使用 kf.client 提交 pipeline
+
+Multi-User mode
+Note, multi-user mode technical details were put in the How in-cluster authentication works section below.
+
+Choose your use-case from one of the options below:
+
+Access Kubeflow Pipelines from Jupyter notebook
+
+In order to access Kubeflow Pipelines from Jupyter notebook, an additional per namespace (profile) manifest is required:
+
+- "<YOUR_USER_PROFILE_NAMESPACE>" 比如我的是 `kubeflow-user-example-com`
+- [参见](./xuwei_yaml/access_pipeline_for_jupyter.yaml)
+```yaml
+apiVersion: kubeflow.org/v1alpha1
+kind: PodDefault
+metadata:
+  name: access-ml-pipeline
+  namespace: "<YOUR_USER_PROFILE_NAMESPACE>"
+spec:
+  desc: Allow access to Kubeflow Pipelines
+  selector:
+    matchLabels:
+      access-ml-pipeline: "true"
+  volumes:
+    - name: volume-kf-pipeline-token
+      projected:
+        sources:
+          - serviceAccountToken:
+              path: token
+              expirationSeconds: 7200
+              audience: pipelines.kubeflow.org      
+  volumeMounts:
+    - mountPath: /var/run/secrets/kubeflow/pipelines
+      name: volume-kf-pipeline-token
+      readOnly: true
+  env:
+    - name: KF_PIPELINES_SA_TOKEN_PATH
+      value: /var/run/secrets/kubeflow/pipelines/token
+```
+
+
+After the manifest is applied, newly created Jupyter notebook contains an additional option in the **configurations** section. 
+![image](./docs/access_notebook_pipeline.png)
+
+Note, Kubeflow `kfp.Client` expects token either in `KF_PIPELINES_SA_TOKEN_PATH` environment variable or 
+mounted to `/var/run/secrets/kubeflow/pipelines/token`. Do not change these values in the manifest. 
+Similarly, `audience` should not be modified as well. No additional setup is required to refresh tokens.
+
+Remember the setup has to be repeated per each namespace (profile) that should have access to Kubeflow Pipelines API from within Jupyter notebook.
