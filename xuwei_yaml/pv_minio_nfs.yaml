@@ -9,4 +9,4 @@ spec:
     - ReadWriteOnce
   nfs:
     server: 10.250.10.61
-    path: /home/xuwei/kubeflow/pv3
+    path: /home/xuwei_yaml/kubeflow/pv3

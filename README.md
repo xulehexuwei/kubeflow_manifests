@@ -266,7 +266,7 @@ kubectl get pods -n kubeflow-user-example-com
 
 - 通过新建pv，可以解决这类问题，新建pv时要保证存储和pvc的存储大小一致
 
-[参见pv.yaml](./xuwei/pv.yaml)
+[参见pv.yaml](xuwei_yaml/pv.yaml)
 
 然后执行命令 `kubectl apply -f pv.yaml` 创建持久卷，创建好后pvc会自动绑定，然后在 `kubectl get pod --all-namespaces` 查看pod的状态，
 Pending都消除了，没消除的执行 `kubectl delete pod xxxpodname -n namespace` 删除pod，会自动重建。

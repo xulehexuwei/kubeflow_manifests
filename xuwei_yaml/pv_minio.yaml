@@ -11,4 +11,4 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: /home/xuwei/kubeflow/pv3
+    path: /home/xuwei_yaml/kubeflow/pv3

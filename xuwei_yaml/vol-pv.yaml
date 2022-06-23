@@ -11,4 +11,4 @@ spec:
     - ReadWriteOnce
   nfs:
     server: 10.250.10.61
-    path: /home/xuwei/kubeflow/nfs
+    path: /home/xuwei_yaml/kubeflow/nfs

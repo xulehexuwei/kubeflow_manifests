@@ -32,9 +32,9 @@ spec:
             - name: NFS_SERVER
               value: 10.250.10.61
             - name: NFS_PATH
-              value: /home/xuwei/kubeflow/nfs # 需要修改为自己的nfs path
+              value: /home/xuwei_yaml/kubeflow/nfs # 需要修改为自己的nfs path
       volumes:
         - name: nfs-client-root
           nfs:
             server: 10.250.10.61 # 需要修改为自己的nfs server
-            path: /home/xuwei/kubeflow/nfs # 需要修改为自己的nfs server
+            path: /home/xuwei_yaml/kubeflow/nfs # 需要修改为自己的nfs server
