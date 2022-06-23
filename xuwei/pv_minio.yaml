@@ -1,8 +1,11 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: pv-minio-2
+  name: pv-minio-4
+  labels:
+    type: kubeflow-nfs-storage
 spec:
+  storageClassName: kubeflow-nfs-storage
   capacity:
     storage: 20Gi
   accessModes:
