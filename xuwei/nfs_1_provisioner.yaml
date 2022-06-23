@@ -9,6 +9,9 @@ metadata:
   name: nfs-provisioner
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: nfs-provisioner
   strategy:
     type: Recreate
   template:
