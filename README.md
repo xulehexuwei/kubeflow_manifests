@@ -8,11 +8,6 @@
 
 - 所以在正式安装前，先准备好所需要的pv，建议多准备几个，[pv.yaml见](./xuwei_yaml/pv.yaml)
 
-## 1- 安装argo
-- 必须先安装argo，按照这个[参考](https://www.qikqiak.com/post/argo-workflow-engine-for-k8s/)安装就行
-
-- 安装完查看svc，是可以通过NodePort 形式web 访问argo UI的
-
 ## 2- 安装kustomize
 
 ```shell
@@ -20,6 +15,9 @@ cd $GOROOT/bin
 sudo curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | sudo bash
 ```
 
+## 3- 安装过程
+
+- 在安装过程的每一步骤中，有可能出错，报错的话安装两遍，错误原因可能是因为上一步的还没启动。
 
 # 开始安装
 
@@ -258,6 +256,7 @@ kubectl get pods -n knative-serving
 kubectl get pods -n kubeflow
 kubectl get pods -n kubeflow-user-example-com
 ```
+
 成功后，通过 `kubectl get svc -n istio-system` 查看可以看到暴露的端口
 ![istio-ingressgateway](./docs/istio-ingressgateway.png)
 
@@ -286,7 +285,7 @@ Pending都消除了，没消除的执行 `kubectl delete pod xxxpodname -n names
 ## 创建jupyter的时候返回 Could not find CSRF cookie XSRF-TOKEN 错误
 
 主要是由于jupyter-web-app的安全验证策略导致的，详细见https://github.com/kubeflow/kubeflow/issues/5803 
-解决方案环境变量加上APP_SECURE_COOKIES=false,修改见jupyter-web-app.yaml
+解决方案环境变量加上APP_SECURE_COOKIES=false,修改见下：
 
 即在[params.env](./apps/jupyter/jupyter-web-app/upstream/base/params.env)和
 [deployment.yaml](./apps/jupyter/jupyter-web-app/upstream/base/deployment.yaml)中加上变量APP_SECURE_COOKIES=false，
