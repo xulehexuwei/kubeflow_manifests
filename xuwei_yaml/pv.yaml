@@ -3,7 +3,6 @@ kind: PersistentVolume
 metadata:
   name: pv1
 spec:
-  storageClassName: kubeflow-pv
   capacity:
     storage: 20Gi
   accessModes:
@@ -17,7 +16,6 @@ kind: PersistentVolume
 metadata:
   name: pv2
 spec:
-  storageClassName: kubeflow-pv
   capacity:
     storage: 20Gi
   accessModes:
@@ -31,7 +29,6 @@ kind: PersistentVolume
 metadata:
   name: pv3
 spec:
-  storageClassName: kubeflow-pv
   capacity:
     storage: 20Gi
   accessModes:
@@ -45,7 +42,6 @@ kind: PersistentVolume
 metadata:
   name: pv4
 spec:
-  storageClassName: kubeflow-pv
   capacity:
     storage: 20Gi
   accessModes:
@@ -59,7 +55,6 @@ kind: PersistentVolume
 metadata:
   name: pv5
 spec:
-  storageClassName: kubeflow-pv
   capacity:
     storage: 20Gi
   accessModes:
@@ -73,7 +68,6 @@ kind: PersistentVolume
 metadata:
   name: pv6
 spec:
-  storageClassName: kubeflow-pv
   capacity:
     storage: 20Gi
   accessModes:
@@ -87,7 +81,6 @@ kind: PersistentVolume
 metadata:
   name: pv7
 spec:
-  storageClassName: kubeflow-pv
   capacity:
     storage: 20Gi
   accessModes:
@@ -101,7 +94,6 @@ kind: PersistentVolume
 metadata:
   name: pv8
 spec:
-  storageClassName: kubeflow-pv
   capacity:
     storage: 20Gi
   accessModes:
@@ -115,7 +107,6 @@ kind: PersistentVolume
 metadata:
   name: pv9
 spec:
-  storageClassName: kubeflow-pv
   capacity:
     storage: 20Gi
   accessModes:

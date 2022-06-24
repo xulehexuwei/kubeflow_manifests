@@ -1,6 +1,6 @@
 # 安装前
 
-## 配置pv
+## 1- 配置pv
 
 - 因为kubeflow整个项目中声明了6个pvc，如下图所示：
 
@@ -40,7 +40,7 @@ Istio is used by many Kubeflow components to secure their traffic, enforce
 network authorization and implement routing policies.
 
 Install Istio:
-
+报错的话安装两遍，错误原因可能是因为上一步的还没启动
 ```sh
 kustomize build common/istio-1-11/istio-crds/base | kubectl apply -f -
 kustomize build common/istio-1-11/istio-namespace/base | kubectl apply -f -
