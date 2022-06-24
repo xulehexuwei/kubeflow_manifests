@@ -1,5 +1,13 @@
 # 安装前
 
+## 配置pv
+
+- 因为kubeflow整个项目中声明了6个pvc，如下图所示：
+
+![pvc-office](./docs/pvc-office.png)
+
+- 所以在正式安装前，先准备好所需要的pv，建议多准备几个，[pv.yaml见](./xuwei_yaml/pv.yaml)
+
 ## 1- 安装argo
 - 必须先安装argo，按照这个[参考](https://www.qikqiak.com/post/argo-workflow-engine-for-k8s/)安装就行
 

@@ -1,36 +1,124 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-    name: pv-authservice
+  name: pv1
 spec:
-    capacity:
-      storage: 10Gi
-    accessModes:
-      - ReadWriteOnce
-    hostPath:
-      path: "/home/xuwei_yaml/kubeflow/pv1"
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: pv-katib-mysql
-spec:
-  capacity:
-    storage: 10Gi
-  accessModes:
-    - ReadWriteOnce
-  hostPath:
-    path: "/home/xuwei_yaml/kubeflow/pv2"
-
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: pv-mysql
-spec:
+  storageClassName: kubeflow-pv
   capacity:
     storage: 20Gi
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/home/xuwei_yaml/kubeflow/pv4"
+    path: /home/xuwei_yaml/kubeflow/pv1
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv2
+spec:
+  storageClassName: kubeflow-pv
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /home/xuwei_yaml/kubeflow/pv2
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv3
+spec:
+  storageClassName: kubeflow-pv
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /home/xuwei_yaml/kubeflow/pv3
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv4
+spec:
+  storageClassName: kubeflow-pv
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /home/xuwei_yaml/kubeflow/pv4
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv5
+spec:
+  storageClassName: kubeflow-pv
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /home/xuwei_yaml/kubeflow/pv5
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv6
+spec:
+  storageClassName: kubeflow-pv
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /home/xuwei_yaml/kubeflow/pv6
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv7
+spec:
+  storageClassName: kubeflow-pv
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /home/xuwei_yaml/kubeflow/pv7
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv8
+spec:
+  storageClassName: kubeflow-pv
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /home/xuwei_yaml/kubeflow/pv8
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv9
+spec:
+  storageClassName: kubeflow-pv
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /home/xuwei_yaml/kubeflow/pv9
