@@ -138,6 +138,7 @@ kustomize build common/istio-1-11/kubeflow-istio-resources/base | kubectl apply 
 
 Install the [Multi-User Kubeflow Pipelines](https://www.kubeflow.org/docs/components/pipelines/multi-user/) official Kubeflow component:
 
+- minio-5b65df66c9-q457x 可能报错CreateContainerConfigError
 ```sh
 kustomize build apps/pipeline/upstream/env/cert-manager/platform-agnostic-multi-user | kubectl apply -f -
 ```
