@@ -147,6 +147,11 @@ Hovorod 启动时候，python 和 C++ 都做了什么？
 
 ### 4.1 kubeflow operators
 
+
+Operator是Kubernetes中的一种概念，主要是用来打包、部署以及管理用户的任务。但在Kubeflow里面，Operator主要用来管理机器学习或者深度学习里面的任务。
+
+目前主流的Operator有几种，会对应每一种框架。比如用的最多的TF-Operator，主要对应的是tensorflow，MPI-Operator主要对应Horovod，Pytorch和Caffe2的Operator，它们针对各自的框架都有一些定制的场景。
+
 ![operator](./docs/images/kb_operator.jpg)
 
 Operator是针对不同的机器学习框架提供资源调度和分布式训练的能力（TF-Operator，PyTorch-Operator，Caffe2-Operator，MPI-Operator，MXNet-Operator）,
