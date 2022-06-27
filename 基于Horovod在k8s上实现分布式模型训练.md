@@ -263,7 +263,7 @@ spec:
 
 下图是其基础架构图。
 
-![mpi-job](./docs/images/model_train.png)
+![mpi-job](./docs/images/mpi-job.png)
 
 [kubeflow-mpijob horovod 案例](https://github.com/kubeflow/mpi-operator/tree/master/examples/v2beta1/horovod)
 
