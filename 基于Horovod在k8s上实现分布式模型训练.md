@@ -68,9 +68,12 @@
 在工业场景的实践中，分布式模型训练也会采用不同并行方式的组合，例如数据并行与模型并行结合，数据并行与流水线并行结合等。其中数据并行的应用范围最广，
 像搜索、推荐领域的深度学习模型，通常都是采用数据并行的方式进行切分的。
 
-数据并行相对来说更简单一些，N台分布式Worker，每台只处理1/N的数据，理想情况下能达到近似线性的加速效果，大多数的机器学习框架都原生支持或者改动很小就可以支持数据并行模式。
+`数据并行`相对来说更简单一些，N台分布式Worker，每台只处理1/N的数据，理想情况下能达到近似线性的加速效果，
+大多数的机器学习框架都原生支持或者改动很小就可以支持数据并行模式。
 
-模型并行相对复杂一点，对于TensorFlow这类基于计算图的框架而言，可以通过对计算图的分析，把原计算图拆成多个最小依赖子图分别放置到不同的Worker上，同时在多个子图之间插入通信算子（Send/Recieve）来实现模型并行。由于模型并行本身的复杂性，加之开发调试困难，同时对模型本身的结构也有一定要求，在工业应用中，大部分还是以数据并行为主。
+模型并行相对复杂一点，对于TensorFlow这类基于计算图的框架而言，可以通过对计算图的分析，
+把原计算图拆成多个最小依赖子图分别放置到不同的Worker上，同时在多个子图之间插入通信算子（Send/Recieve）来实现模型并行。
+由于模型并行本身的复杂性，加之开发调试困难，同时对模型本身的结构也有一定要求，在工业应用中，大部分还是以`数据并行`为主。
 
 #### 2.2.1 数据并行
 
@@ -92,7 +95,9 @@
 
 ![数据并行](./docs/images/data-parallel.jpg)
 
-## 3 分布式训练框架-Horovod
+### 2.3 分布式训练框架-Horovod
+
+- Horovod 主要是支持`数据并行`的深度学习分布式训练。
 
 Horovod依赖于Nvidia的NCCL2做[All Reduce](./md/ps_mpi.md)，依赖于MPI做进程间通信，简化了同步多 GPU 或多节点分布式训练的开发流程。
 由于使用了NCCL2，Horovod也可以利用以下功能：NVLINK，RDMA，GPUDirectRDMA，自动检测通信拓扑，能够回退到 PCIe 和 TCP/IP 通信。
@@ -108,9 +113,7 @@ Horovod是Uber开源的跨平台的分布式训练工具，名字来自于俄国
 - 使用Ring-AllReduce算法，对比Parameter Server算法，有着无需等待，负载均衡的优点。
 - 实现简单，五分钟包教包会。（划重点）
 
-[horovod 官方案例](https://github.com/horovod/horovod/tree/master/examples)
-
-- 引导分析：
+#### 2.3.1 Horovod问答
 
 Hovorod 怎么进行数据分割？
 
@@ -124,12 +127,11 @@ Hovorod 启动时候，python 和 C++ 都做了什么？
 
 - 答案：python 会引入 C++库，初始化各种变量和配置。C++部分会对 MPI，GLOO上下文进行初始化，启动后台进程处理内部通信。
 
-
 如何确保 Hovorod 启动时候步骤一致；
 
 - 答案： rank 0 上的所有参数只在 rank 0 初始化，然后广播给其他节点，即变量从第一个流程向其他流程传播，以实现参数一致性初始化。
 
-### 3.2 五行代码入门Horovod
+#### 2.3.2 五行代码入门Horovod
 
 ![tf_horovod](./docs/images/tf_horovod.png)
 
@@ -143,9 +145,9 @@ horovodrun -np 16 -H server1:4,server2:4,server3:4,server4:4 python tensorflow_m
 
 这里 -np指的是进程的数量，server1:4表示server1节点上4个GPU，完整代码参见tensorflow_mnist.py 
 
-### 3.2 案例和MPI启动
+#### 2.3.3 案例和MPI启动
 
-[案例](https://github.com/horovod/horovod/tree/master/examples)
+[horovod 官方案例](https://github.com/horovod/horovod/tree/master/examples)
 
 [MPI启动](https://github.com/horovod/horovod/blob/master/docs/mpi.rst)
 
@@ -154,7 +156,7 @@ horovodrun -np 16 -H server1:4,server2:4,server3:4,server4:4 python tensorflow_m
 [k8s mpi 启动 horovod 的yaml 配置](https://docs.amazonaws.cn/deep-learning-containers/latest/devguide/deep-learning-containers-eks-tutorials-distributed-gpu-training.html)
 
 
-## 4 k8s 环境下安装 kubeflow
+## 3 k8s 环境下安装 kubeflow
 
 - 使用kubeflow 的 MPI-operator 和 pipeline 跑 horovod任务可以调sdk接口，可以可视化过程和日志输出。
 
@@ -163,7 +165,7 @@ horovodrun -np 16 -H server1:4,server2:4,server3:4,server4:4 python tensorflow_m
 [安装教程](./README.md)
 
 
-### 4.1 kubeflow operators
+### 3.1 kubeflow operators
 
 
 Operator是Kubernetes中的一种概念，主要是用来打包、部署以及管理用户的任务。但在Kubeflow里面，Operator主要用来管理机器学习或者深度学习里面的任务。
@@ -180,7 +182,7 @@ Operator是针对不同的机器学习框架提供资源调度和分布式训练
 - 监控并更新整个任务的状态
 
 
-#### 4.1.1 1 MPI Operator
+#### 3.1 1 MPI Operator
 
 MPI(Message Passing Interface) 是一种可以支持点对点和广播的通信协议，具体实现的库有很多，使用比较流行的包括 Open Mpi, Intel MPI 等等。
 
