@@ -135,6 +135,7 @@ Hovorod 启动时候，python 和 C++ 都做了什么？
 
 [k8s mpi 启动 horovod 的yaml 配置](https://docs.amazonaws.cn/deep-learning-containers/latest/devguide/deep-learning-containers-eks-tutorials-distributed-gpu-training.html)
 
+
 ## 4 k8s 环境下安装 kubeflow
 
 - 使用kubeflow 的 MPI-operator 和 pipeline 跑 horovod任务可以调sdk接口，可以可视化过程和日志输出。
@@ -158,6 +159,8 @@ Operator是针对不同的机器学习框架提供资源调度和分布式训练
 
 #### 4.1.1 1 MPI Operator
 
+MPI(Message Passing Interface) 是一种可以支持点对点和广播的通信协议，具体实现的库有很多，使用比较流行的包括 Open Mpi, Intel MPI 等等。
+
 MPI Operator 是 Kubeflow 的一个组件，是 Kubeflow 社区贡献的另一个关于深度/机器学习的一个 Operator，主要就是为了 MPI 任务或者 Horovod 任务提供了一个多机管理工作。
 
 - Kubeflow 提供 mpi-operator，可使 allreduce 样式的分布式训练像在单个节点上进行培训一样简单。
@@ -168,6 +171,83 @@ MPI Operator 是 Kubeflow 的一个组件，是 Kubeflow 社区贡献的另一�
 
 - Mpi-operator 可以做到开箱即用，但是在生产集群的应用，面对一些固定场景和业务的时候会有一定的限制。
 
+mpi-operator 是 Kubeflow 社区贡献的另一个关于深度/机器学习的一个 Operator，关于 mpi-operator 的 proposal，
+可以参考 mpi-operator-proposal。目前社区在 mpi-operator 主要用于 allreduce-style 的分布式训练，因为 mpi-operator 
+本质上就是给用户管理好多个进程之间的关系，所以天然支持的框架很多，包括 Horovod, TensorFlow, PyTorch, Apache MXNet 等等。
+而 mpi-operator 的基本架构是通过 Mpijob 的这种自定义资源对象来描述分布式机器学习的训练任务，同时实现了 Mpijob 的 Controller 来控制，
+其中分为 Launcher 和 Worker 这两种类型的工作负荷。
+
+- 对于用户，只要创建一个 Mpijob 的自定义资源对象，在 Template 配置好 Launcher 和 Worker 的相关信息，就相当于描述好一个分布式训练程序的执行过程了。
+
+```yaml
+apiVersion: kubeflow.org/v1alpha2
+kind: MPIJob
+metadata:
+  name: tensorflow-mnist
+spec:
+  slotsPerWorker: 1
+  cleanPodPolicy: Running
+  mpiReplicaSpecs:
+    Launcher:
+      replicas: 1
+      template:
+        spec:
+          containers:
+          - image: horovod-cpu:latest
+            name: mpi-launcher
+            command:
+            - mpirun
+            args:
+            - -np
+            - "2"
+            - --allow-run-as-root
+            - -bind-to
+            - none
+            - -map-by
+            - slot
+            - -x
+            - LD_LIBRARY_PATH
+            - -x
+            - PATH
+            - -mca
+            - pml
+            - ob1
+            - -mca
+            - btl
+            - ^openib
+            - python
+            - /examples/tensorflow_mnist.py
+            resources:
+              limits:
+                cpu: 1
+                memory: 2Gi
+    Worker:
+      replicas: 2
+      template:
+        spec:
+          containers:
+          - command:
+            - ""
+            image: horovod-cpu:latest
+            name: mpi-worker
+            resources:
+              limits:
+                cpu: 2
+                memory: 4Gi
+```
+
+- Worker 本质上是 StatefulSet，在分布式训练的过程中，训练任务通常是有状态的，StatefulSet 正是管理这些的 Workload 的对象。
+
+- Launcher 相当于一个启动器的角色，它会等Worker都就位之后，去启动MPI的任务。通常会是一个比较轻量化的 Job，他主要完成几条命令的发送就可以了，
+通常是把命令通过 ssh/rsh 来发送接受命令，在 mpi-operator 里使用的是 kubectl 来给 Worker 发送命令。 
+
+下图是其基础架构图。
+
+![mpi-job](./docs/images/model_train.png)
+
+[kubeflow-mpijob horovod 案例](https://github.com/kubeflow/mpi-operator/tree/master/examples/v2beta1/horovod)
+
+[详细介绍](https://mp.weixin.qq.com/s/83_5FKrGFy1oupMIkulJhg)
 
 ## 5 kubeflow web演示
 
