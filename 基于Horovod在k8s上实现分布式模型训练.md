@@ -94,7 +94,7 @@
 
 ## 3 分布式训练框架-Horovod
 
-Horovod依赖于Nvidia的NCCL2做All Reduce，依赖于MPI做进程间通信，简化了同步多 GPU 或多节点分布式训练的开发流程。
+Horovod依赖于Nvidia的NCCL2做[All Reduce](./md/ps_mpi.md)，依赖于MPI做进程间通信，简化了同步多 GPU 或多节点分布式训练的开发流程。
 由于使用了NCCL2，Horovod也可以利用以下功能：NVLINK，RDMA，GPUDirectRDMA，自动检测通信拓扑，能够回退到 PCIe 和 TCP/IP 通信。
 
 Horovod 是一套支持TensorFlow, Keras, PyTorch, and Apache MXNet 的分布式训练框架，由 Uber 构建并开源的第三方库，
@@ -109,10 +109,6 @@ Horovod是Uber开源的跨平台的分布式训练工具，名字来自于俄国
 - 实现简单，五分钟包教包会。（划重点）
 
 [horovod 官方案例](https://github.com/horovod/horovod/tree/master/examples)
-
-Horovod依赖于Nvidia的 NCCL2 做 All Reduce，依赖于MPI(Message Passing Interface 一种用于并行计算的消息传递标准)做进程间通信，
-简化了同步多 GPU 或多节点分布式训练的开发流程。 由于使用了NCCL2，Horovod也可以利用以下功能：NVLINK，RDMA，GPUDirectRDMA，
-自动检测通信拓扑，能够回退到 PCIe 和 TCP/IP 通信。
 
 - 引导分析：
 
@@ -133,7 +129,21 @@ Hovorod 启动时候，python 和 C++ 都做了什么？
 
 - 答案： rank 0 上的所有参数只在 rank 0 初始化，然后广播给其他节点，即变量从第一个流程向其他流程传播，以实现参数一致性初始化。
 
-### 3.1 案例和MPI启动
+### 3.2 五行代码入门Horovod
+
+![tf_horovod](./docs/images/tf_horovod.png)
+
+上面代码中，加粗的第一行hvd.init()初始化Horovod，然后和在Tensorflow中一样构建模型，第二处修改是声明训练会话的配置，
+给当前进程分配对应的GPU，local_rank()返回的是当前是第几个进程。第三处修改添加Horovod分布式优化器，第四处修改定义初始化的时候广播参数的hook，
+这个是为了在一开始的时候同步各个GPU之间的参数。最后用MonitoredTrainingSession实现会话的初始化，读写checkpoint。启动该程序只需要执行如下命令：
+
+```shell
+horovodrun -np 16 -H server1:4,server2:4,server3:4,server4:4 python tensorflow_mnist.py
+```
+
+这里 -np指的是进程的数量，server1:4表示server1节点上4个GPU，完整代码参见tensorflow_mnist.py 
+
+### 3.2 案例和MPI启动
 
 [案例](https://github.com/horovod/horovod/tree/master/examples)
 
