@@ -1,10 +1,10 @@
 # 基于Horovod在k8s上实现分布式模型训练
 
-- AI模型训练
+- 模型开发过程
 - 分布式训练框架 `Horovod`
 - `k8s`、`kubeflow`、`MPI-operator`
 
-## 1- AI模型训练的过程
+## 1 模型开发过程
 
 - 全流程
 
