@@ -182,24 +182,19 @@ Operator是针对不同的机器学习框架提供资源调度和分布式训练
 - 监控并更新整个任务的状态
 
 
-#### 3.1 1 MPI Operator
+#### 3.1.1 MPI Operator
 
 MPI(Message Passing Interface) 是一种可以支持点对点和广播的通信协议，具体实现的库有很多，使用比较流行的包括 Open Mpi, Intel MPI 等等。
 
 MPI Operator 是 Kubeflow 的一个组件，是 Kubeflow 社区贡献的另一个关于深度/机器学习的一个 Operator，主要就是为了 MPI 任务或者 Horovod 任务提供了一个多机管理工作。
 
-- Kubeflow 提供 mpi-operator，可使 allreduce 样式的分布式训练像在单个节点上进行培训一样简单。
-
-- 我们可以轻松地在 Kubernetes 上运行 allreduce 样式的分布式训练。在操作系统上安装ksonnet 后，可安装 MPI Operator。其后将安装 MPIJob 和作业控制器，最后可以将 MPIJob 提交到 Kubernetes 集群。
+- Kubeflow 提供 mpi-operator，可使 [All Reduce](./md/ps_mpi.md) 样式的分布式训练像在单个节点上进行培训一样简单。
 
 - 对于用户，只要创建一个 MPIJob 的自定义资源对象，在 Template 配置好 Launcher 和 Worker 的相关信息，就相当于描述好一个分布式训练程序的执行过程了。
 
 - Mpi-operator 可以做到开箱即用，但是在生产集群的应用，面对一些固定场景和业务的时候会有一定的限制。
 
-mpi-operator 是 Kubeflow 社区贡献的另一个关于深度/机器学习的一个 Operator，关于 mpi-operator 的 proposal，
-可以参考 mpi-operator-proposal。目前社区在 mpi-operator 主要用于 allreduce-style 的分布式训练，因为 mpi-operator 
-本质上就是给用户管理好多个进程之间的关系，所以天然支持的框架很多，包括 Horovod, TensorFlow, PyTorch, Apache MXNet 等等。
-而 mpi-operator 的基本架构是通过 Mpijob 的这种自定义资源对象来描述分布式机器学习的训练任务，同时实现了 Mpijob 的 Controller 来控制，
+mpi-operator 的基本架构是通过 Mpijob 的这种自定义资源对象来描述分布式机器学习的训练任务，同时实现了 Mpijob 的 Controller 来控制，
 其中分为 Launcher 和 Worker 这两种类型的工作负荷。
 
 - 对于用户，只要创建一个 Mpijob 的自定义资源对象，在 Template 配置好 Launcher 和 Worker 的相关信息，就相当于描述好一个分布式训练程序的执行过程了。
