@@ -94,8 +94,14 @@
 
 ## 3 分布式训练框架-Horovod
 
-Horovod 是一套支持TensorFlow, Keras, PyTorch, and Apache MXNet 的分布式训练框架，由 Uber 构建并开源的第三方库，在分布式训练中性能优于原生像Tensorflow这种ps，worker架构，且代码改动量少，无需在多个节点多次执行脚本命令，使用起来方便。
+Horovod依赖于Nvidia的NCCL2做All Reduce，依赖于MPI做进程间通信，简化了同步多 GPU 或多节点分布式训练的开发流程。
+由于使用了NCCL2，Horovod也可以利用以下功能：NVLINK，RDMA，GPUDirectRDMA，自动检测通信拓扑，能够回退到 PCIe 和 TCP/IP 通信。
+
+Horovod 是一套支持TensorFlow, Keras, PyTorch, and Apache MXNet 的分布式训练框架，由 Uber 构建并开源的第三方库，
+在分布式训练中性能优于原生像Tensorflow这种ps，worker架构，且代码改动量少，无需在多个节点多次执行脚本命令，使用起来方便。
+
 Horovod，一个开源库：它通过环形拓扑结构来实现高效的GPU间通信，并且只需对用户代码进行几行修改，即可实现更快、更轻松的TensorFlow分布式训练。
+
 Horovod是Uber开源的跨平台的分布式训练工具，名字来自于俄国传统民间舞蹈，舞者手牵手围成一个圈跳舞，与Horovod设备之间的通信模式很像，有以下几个特点：
 
 - 兼容TensorFlow、Keras和PyTorch机器学习框架。
