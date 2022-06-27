@@ -5,8 +5,8 @@
 # After that, you will compile a Kubeflow Pipeline with your Katib Experiment.
 # Use Kubeflow Pipelines UI to upload the Pipeline and create the Experiment and Run.
 
-# This Experiment is similar to this: https://github.com/kubeflow/katib/blob/master/examples/v1beta1/kubeflow-training-operator/mpijob-horovod.yaml
-# Check the training container source code here: https://github.com/kubeflow/mpi-operator/tree/master/examples/horovod.
+# This Experiment is similar to this: https://github.com/kubeflow/mpi-operator/blob/master/examples/v2beta1/horovod/tensorflow-mnist.yaml
+# Check the training container source code here: https://github.com/kubeflow/mpi-operator/blob/master/examples/v2beta1/horovod/tensorflow_mnist.py.
 
 # Note: To run this example, your Kubernetes cluster should run MPIJob operator.
 # Follow this guide to install MPIJob on your cluster: https://www.kubeflow.org/docs/components/training/mpi/
