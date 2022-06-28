@@ -23,3 +23,5 @@ spec:
   env:
     - name: KF_PIPELINES_SA_TOKEN_PATH
       value: /var/run/secrets/kubeflow/pipelines/token
+    - name: GRANT_SUDO
+      value: yes
