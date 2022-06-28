@@ -349,3 +349,18 @@ mounted to `/var/run/secrets/kubeflow/pipelines/token`. Do not change these valu
 Similarly, `audience` should not be modified as well. No additional setup is required to refresh tokens.
 
 Remember the setup has to be repeated per each namespace (profile) that should have access to Kubeflow Pipelines API from within Jupyter notebook.
+
+
+## 让notebook具有root权限
+
+- 这样可以apt-get安装一些软件
+
+- 重构镜像
+```shell
+# 让容器用户具有免密root权限
+docker run --name xwtest -it -e GRANT_SUDO=yes --user root -p 8888:8888 -d public.ecr.aws/j1r0q0g6/notebooks/notebook-servers/jupyter-scipy:v1.5.0
+# 打包该镜像
+docker commit 8e48346f8567 public.ecr.aws/j1r0q0g6/notebooks/notebook-servers/jupyter-scipy-root:v1.5.0
+# 查看
+docker ps|grep jupyter-scipy-root
+```
