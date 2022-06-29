@@ -9,6 +9,8 @@
 
 ## Allreduce
 
+GPU高效通信算法-Ring Allreduce
+
 该算法是百度在 《Bringing HPC techniques to deep learning 》提出， 在 ring Allreduce 中，所有的GPU形成一个环。
 每个GPU有一个左邻居和一个右邻居；它只会向它的右邻居发送数据，并从它的左邻居接收数据，该算法分两步进行：第一步，scatter-reduce, 第二步：allgather。
 
