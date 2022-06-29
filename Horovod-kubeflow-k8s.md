@@ -131,21 +131,97 @@ Hovorod 启动时候，python 和 C++ 都做了什么？
 
 - 答案： rank 0 上的所有参数只在 rank 0 初始化，然后广播给其他节点，即变量从第一个流程向其他流程传播，以实现参数一致性初始化。
 
-#### 2.3.2 五行代码入门Horovod
+#### 2.3.2 入门Horovod (tensorflow 实例)
 
-![tf_horovod](./docs/images/tf_horovod.png)
+```python
+import tensorflow as tf
+import horovod.tensorflow as hvd
 
-上面代码中，加粗的第一行hvd.init()初始化Horovod，然后和在Tensorflow中一样构建模型，第二处修改是声明训练会话的配置，
-给当前进程分配对应的GPU，local_rank()返回的是当前是第几个进程。第三处修改添加Horovod分布式优化器，第四处修改定义初始化的时候广播参数的hook，
-这个是为了在一开始的时候同步各个GPU之间的参数。最后用MonitoredTrainingSession实现会话的初始化，读写checkpoint。启动该程序只需要执行如下命令：
+# Initialize Horovod
+hvd.init()
 
-```shell
-horovodrun -np 16 -H server1:4,server2:4,server3:4,server4:4 python tensorflow_mnist.py
+# Pin GPU to be used to process local rank (one GPU per process)
+config = tf.ConfigProto()
+config.gpu_options.visible_device_list = str(hvd.local_rank())
+
+# Build model...
+loss = ...
+opt = tf.train.AdagradOptimizer(0.01 * hvd.size())
+
+# Add Horovod Distributed Optimizer
+opt = hvd.DistributedOptimizer(opt)
+
+# Add hook to broadcast variables from rank 0 to all other processes during
+# initialization.
+hooks = [hvd.BroadcastGlobalVariablesHook(0)]
+
+# Make training operation
+train_op = opt.minimize(loss)
+
+# Save checkpoints only on worker 0 to prevent other workers from corrupting them.
+checkpoint_dir = '/tmp/train_logs' if hvd.rank() == 0 else None
+
+# The MonitoredTrainingSession takes care of session initialization,
+# restoring from a checkpoint, saving to a checkpoint, and closing when done
+# or an error occurs.
+with tf.train.MonitoredTrainingSession(checkpoint_dir=checkpoint_dir, config=config, hooks=hooks) as mon_sess:
+   while not mon_sess.should_stop():
+      # Perform synchronous training.
+      mon_sess.run(train_op)
+
 ```
 
-这里 -np指的是进程的数量，server1:4表示server1节点上4个GPU，完整代码参见tensorflow_mnist.py 
+- 1）初始化 Horovod
+   
+      hvd.init()
 
-#### 2.3.3 案例和MPI启动
+- 2）声明训练会话的配置，一个 GPU 与一个进程绑定
+
+      config = tf.ConfigProto()
+      config.gpu_options.visible_device_list = str(hvd.local_rank())
+      # local_rank()返回的是当前是第几个进程
+
+- 3）根据总 GPU 数量放大学习率
+
+      opt = tf.train.AdagradOptimizer(0.01 * hvd.size())
+      # 因为 BatchSize 会根据 GPU 数量放大，所以学习率也应该放大。
+
+- 4）添加Horovod分布式优化器，使用 hvd.DistributedOptimizer 封装原有的 optimizer
+
+      opt = hvd.DistributedOptimizer(opt)
+      # 分布式训练涉及到梯度同步，每一个 GPU 的梯度计算仍然由原有的 optimizer 计算，只是梯度同步由 hvd.DistributedOptimizer 负责。
+
+- 5）广播初始变量值到所有进程
+
+      hooks = [hvd.BroadcastGlobalVariablesHook(0)]
+      # 主要为了确保所有进程变量初始值相同。
+
+- 6）只在 worker 0 上保存 checkpoint
+
+      checkpoint_dir = ‘/tmp/train_logs’ if hvd.rank() == 0 else None
+      防止 checkpoint 保存错乱。
+
+- 7）最后用MonitoredTrainingSession实现会话的初始化，读写checkpoint
+
+Horovod 只是需要改动必要改动的，不涉及 Parameter Server 架构的 device 设置等繁琐的操作。
+
+
+- 在单机 4 卡的机上起训练，只需执行以下命令：
+
+```shell
+horovodrun -np 4 -H localhost:4 python train.py
+```
+
+- 在 4 机，每机 4 卡的机子上起训练，只需在一个机子上执行以下命令即可：
+
+```shell
+horovodrun -np 16 -H server1:4,server2:4,server3:4,server4:4 python train.py
+# 这里 -np指的是进程的数量，server1:4表示server1节点上4个GPU
+```
+
+注意无论是单机多卡，还是多机多卡，都只需在一个机子上执行一次命令即可，其他机 Horovod 会用 MPI 启动进程和传递数据。
+
+#### 2.3.3 更多案例和MPI启动
 
 [horovod 官方案例](https://github.com/horovod/horovod/tree/master/examples)
 
