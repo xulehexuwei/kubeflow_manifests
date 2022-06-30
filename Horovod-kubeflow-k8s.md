@@ -40,6 +40,11 @@
 - 现阶段常用的优化方法仍然是反向传播和各类变种的梯度下降，这就要求模型算子是可导的
 - 使用求导器完成反向传播过程中的梯度计算，使用优化器调整模型参数
 
+### 1.4 模型训练时的超参数
+
+[深度学习中的batch、batch size、full batch、mini batch、iterations与epoch](./md/Hyperparameters.md)
+
+
 ## 2- 分布式训练
 
 ### 2.1 为什么需要分布式训练
