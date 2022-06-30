@@ -105,8 +105,10 @@
 
 ### 2.3 分布式训练框架-Horovod
 
+- Horovod是一款支持`数据并行`，同步更新梯度和AllReduce集合通信的分布式训练框架。
 - Horovod 目前架构的基础是：机器学习的模型参数在一张 GPU 上可以存下。
-- Horovod 主要是支持`数据并行`的深度学习分布式训练。
+
+![horovod 架构](./docs/images/horovod_structure.jpg)
 
 Horovod依赖于Nvidia的NCCL2做[All Reduce](./md/ps_mpi.md)，依赖于MPI做进程间通信，简化了同步多 GPU 或多节点分布式训练的开发流程。
 由于使用了NCCL2，Horovod也可以利用以下功能：NVLINK，RDMA，GPUDirectRDMA，自动检测通信拓扑，能够回退到 PCIe 和 TCP/IP 通信。
@@ -231,6 +233,8 @@ horovodrun -np 16 -H server1:4,server2:4,server3:4,server4:4 python train.py
 ```
 
 注意无论是单机多卡，还是多机多卡，都只需在一个机子上执行一次命令即可，其他机 Horovod 会用 MPI 启动进程和传递数据。
+
+[pytorch 案例](./md/horovod_pytorch_details.md)
 
 #### 2.3.3 更多案例和MPI启动
 
