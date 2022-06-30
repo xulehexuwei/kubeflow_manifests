@@ -30,7 +30,7 @@ export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/openmpi/lib/"
 
 执行安装命令，安装horovod
 
-`HOROVOD_GPU_ALLREDUCE=NCCL HOROVOD_WITH_TENSORFLOW=1 /data3/xingshuai/tools/miniconda3/bin/pip install --verbose --no-cache-dir horovod`
+`HOROVOD_GPU_ALLREDUCE=NCCL HOROVOD_WITH_TENSORFLOW=1 /opt/conda/bin/pip install --verbose --no-cache-dir horovod`
 
 注意numpy版本要<1.17，执行miniconda3/bin/pip install numpy==1.16.4安装1.16版本
 
@@ -40,5 +40,5 @@ export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/openmpi/lib/"
 $ git clone --recursive https://github.com/horovod/horovod
 $ cd horovod
 $ python setup.py sdist
-$ HOROVOD_GPU_ALLREDUCE=NCCL HOROVOD_WITH_TENSORFLOW=1 pip install --no-cache-dir dist/horovod-0.16.4.tar.gz
+$ HOROVOD_GPU_ALLREDUCE=NCCL HOROVOD_WITH_TENSORFLOW=1 pip install --no-cache-dir dist/horovod-0.25.0.tar.gz
 ```
