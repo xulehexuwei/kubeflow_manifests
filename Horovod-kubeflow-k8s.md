@@ -105,6 +105,7 @@
 
 ### 2.3 分布式训练框架-Horovod
 
+- Horovod 目前架构的基础是：机器学习的模型参数在一张 GPU 上可以存下。
 - Horovod 主要是支持`数据并行`的深度学习分布式训练。
 
 Horovod依赖于Nvidia的NCCL2做[All Reduce](./md/ps_mpi.md)，依赖于MPI做进程间通信，简化了同步多 GPU 或多节点分布式训练的开发流程。
@@ -140,6 +141,8 @@ Hovorod 启动时候，python 和 C++ 都做了什么？
 - 答案： rank 0 上的所有参数只在 rank 0 初始化，然后广播给其他节点，即变量从第一个流程向其他流程传播，以实现参数一致性初始化。
 
 #### 2.3.2 入门Horovod (tensorflow 实例)
+
+- Horovod 指定多GPU 运行的时候，可以调大batch size的大小，在for循环每次 optimizer 时，会自动拆分batch 到多个GPU上进行分布式梯度计算。
 
 ```python
 import tensorflow as tf
