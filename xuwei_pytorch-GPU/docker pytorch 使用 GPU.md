@@ -90,7 +90,9 @@ cuDNN 可加速广泛应用的深度学习框架，包括 Caffe2、Chainer、Ker
 - 下面是安装教程，安装过程中如果出错，根据错误原因自行谷歌
 
 [CUDA 和 CUDNN 安装教程参见](https://zhuanlan.zhihu.com/p/72298520)
+
 [CUDNN 安装包下载 需要先注册账号](https://developer.nvidia.com/rdp/cudnn-download)
+
 [CUDNN 官方安装教程](https://docs.nvidia.com/deeplearning/cudnn/install-guide/index.html)
 
 
