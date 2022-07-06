@@ -58,10 +58,14 @@ sudo nvidia-smi
 ## 3- 安装CUDA 和 CUDNN
 
 ### 3.1 简介
+
+![CUDA-frame](../docs/images/CUDA-frame.jpg)
+
+
 CUDA (ComputeUnified Device Architecture) 是一种由 NVIDIA 推出的通用并行计算架构，只能应用于 NVIDIA 的系列显卡，
 目前主流的深度学习框架包括 TensorFlow 都是使用 CUDA 来进行 GPU 加速的（可以把 CUDA 当做是一种驱动程序，
 TensorFlow 通过这个驱动程序来使用显卡），所以我们必须先安装 CUDA。
-
+CUDA是一个并行计算平台和编程模型，能够使得使用GPU进行通用计算变得简单和优雅。
 
 
 深度神经网络库 (cuDNN) 是经 GPU 加速的深度神经网络基元库。
