@@ -130,7 +130,7 @@ Anaconda 在安装 Pytorch 等会使用到 CUDA 的框架时，会自动为用�
 
 ## 6- docker pytorch 容器使用 GPU 进行训练
 
-### 6.1 docker能够使用GPU
+### 6.1 让docker能够使用GPU
 
 若 docker 版本 > 19.03 则不需要安装 nvidia-docker ，只需要安装 nvidia-container-tookit，步骤如下：
 
