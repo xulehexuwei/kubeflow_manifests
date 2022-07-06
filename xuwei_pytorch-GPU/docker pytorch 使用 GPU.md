@@ -10,8 +10,7 @@
 lspci | grep -i vga
 ```
 
-
-- 使用nvidia GPU可以：
+- 使用nvidia GPU可以（一般都是nvidia的）：
 
 ```shell
 lspci | grep -i nvidia
@@ -21,7 +20,24 @@ lspci | grep -i nvidia
 
 首先使用 `nvidia-smi` 命令，测试是否已经安装好驱动，如果没该命令，按如下步骤安装：
 
+- 1、下载并安装 NVIDIA GPU 的驱动程序。以下链接中提供了 Ubuntu 的 NVIDIA 驱动程序列表：
+[Binary Driver How to - Nvidia](https://www.ibm.com/links?url=https%3A%2F%2Fhelp.ubuntu.com%2Fcommunity%2FBinaryDriverHowto%2FNvidia)。
+下面是命令示例：
 
+
+```shell
+sudo apt-get install ubuntu-drivers-common
+sudo ubuntu-drivers devices
+
+# 型号斟酌下，选取
+sudo apt-get install nvidia-384
+```
+
+- 2、使用以下命令检查 NVIDIA 驱动程序是否安装正确：
+
+```shell
+sudo nvidia-smi
+```
 
 安装 安装 cuda 和 cudnn
 

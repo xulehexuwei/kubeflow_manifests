@@ -35,13 +35,3 @@ watch -n 10 nvidia-smi
 sudo apt install nvidia-cuda-toolkit
 
 
-## 关于AWS的一些问题
-
-- 1、GPU服务默认会配好CUDA、和CUDNN吗
-
-- 2、CUDA、CUDNN、和pytorch、TensorFlow等版本对应关系的控制（版本不一致会运行不成功）
-
-```shell
-docker run -it -d --gpus "device=3" --ipc=host -p 10036:22 -v  /ws/huangshan:/ws --name "paddle2.1" paddlepaddle/paddle:2.1.2-gpu-cuda11.2-cudnn8 bash -c "/etc/rc.local; /bin/bash"
-```
-
