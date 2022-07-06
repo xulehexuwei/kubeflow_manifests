@@ -37,7 +37,7 @@ docker run --gpus all --rm -ti --ipc=host horovod/horovod:latest
 ```shell
 # horovodrun 引入了一个方便的、基于 Open MPI 的包装器，用于运行 Horovod 脚本。
 
-horovodrun -np 4 -H localhost:4 python  pytorch_lightning_mnist.py
+horovodrun -np 4 -H localhost:4 python  pytorch_mnist.py
 ```
 
 上面的命令等价 (单机多卡间无法通信，miss rank 或者 Connection reset by peer 通过启动docker 时加上 --ipc=host 共享主机内存解决)
@@ -47,7 +47,7 @@ mpirun -np 4 \
     -bind-to none -map-by slot \
     -x NCCL_DEBUG=INFO -x LD_LIBRARY_PATH -x PATH \
     -mca pml ob1 -mca btl ^openib \
-    python pytorch_lightning_mnist.py
+    python pytorch_mnist.py
 ```
 
 ![horovod-case](../docs/images/horovod-case.png)
