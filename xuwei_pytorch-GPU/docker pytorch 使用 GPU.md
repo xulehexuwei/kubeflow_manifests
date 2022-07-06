@@ -130,6 +130,8 @@ Anaconda 在安装 Pytorch 等会使用到 CUDA 的框架时，会自动为用�
 
 ## 6- docker pytorch 容器使用 GPU 进行训练
 
+### 6.1 docker能够使用GPU
+
 若 docker 版本 > 19.03 则不需要安装 nvidia-docker ，只需要安装 nvidia-container-tookit，步骤如下：
 
 - 添加apt-get源
@@ -153,7 +155,7 @@ sudo docker run --rm --gpus all nvidia/cuda:10.0-base nvidia-smi
 成功见下图
 ![成功](../docs/images/docker_gpu.png)
 
-## docker pytorch (cuda-11.3)单机多卡容器启动训练
+### 6.2 拉取 pytorch-cuda 镜像
 
 您还可以从 Docker Hub 拉取预先构建的 docker 映像并使用 docker v19.03+ 运行
 
@@ -165,34 +167,35 @@ docker pull pytorch/pytorch:1.12.0-cuda11.3-cudnn8-runtime
 
 - 上面的镜像启动的容器是可以在容器中使用GPU的
 
+- 注：`pytorch/pytorch:1.12.0-cuda11.3-cudnn8-runtime`该镜像已经封装了conda、pip、`nvidia-smi`等环境，如下图所示：
 
-### docker容器执行脚本进行单机多卡分布式训练
+![docker-nvidia-smi](../docs/images/docker-nvidia-smi.png)
+
+### 6.3 进入容器，执行脚本进行单机多卡分布式训练
 
 一个 pytorch 分布式训练脚本 [ddp_case1.py](./ddp_case1.py)
 
 - `/home/ubuntu/xuwei/pytorch_ddp` 是本机存放 `ddp_case1.py` 的目录，挂载到容器的`workspace`目录中，运行下面的命令启动容器：
 
 ```shell
-# PyTorch使用共享内存在进程之间共享数据，因此如果使用torch多处理（例如，对于多线程数据加载程序），容器运行的默认共享内存段大小是不够的，
-# 您应该使用--ipc=host或--shm-size命令行选项来增加共享内存大小以运行nvidia-docker。
 docker run --gpus all --rm -ti --ipc=host -v /home/ubuntu/xuwei/pytorch_ddp:/workspace  pytorch/pytorch:1.12.0-cuda11.3-cudnn8-runtime
 ```
+PyTorch使用共享内存在进程之间共享数据，因此如果使用torch多处理（例如，对于多线程数据加载程序），容器运行的默认共享内存段大小是不够的， 
+您应该使用--ipc=host或--shm-size命令行选项来增加共享内存大小以运行nvidia-docker。
 
-- 注：`pytorch/pytorch:1.12.0-cuda11.3-cudnn8-runtime`该镜像已经封装了conda、pip、`nvidia-smi`等环境，如下图所示：
-
-![docker-nvidia-smi](../docs/images/docker-nvidia-smi.png)
 
 - 执行分布式训练命令，启动容器中的单机多卡分布式训练
 
 ```shell
 # DDP: 使用torch.distributed.launch启动DDP模式
 # 使用CUDA_VISIBLE_DEVICES，来决定使用哪些GPU
+
 CUDA_VISIBLE_DEVICES="0,1" python -m torch.distributed.launch --nproc_per_node 2 ddp_case1.py
 ```
 
 ![pytorch_run](../docs/images/pytorch_run.png)
 
-- 同时你可以在`本机`执行下面的命令，查看GPU使用情况：
+- 同时你可以在`本机`（不是容器）执行下面的命令，查看GPU使用情况：
 
 ```shell
 # 周期性的输出显卡的使用情况，可以用watch指令实现，每隔10秒刷新一次使用情况：
