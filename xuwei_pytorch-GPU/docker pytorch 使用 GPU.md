@@ -77,9 +77,13 @@ cuDNN 可加速广泛应用的深度学习框架，包括 Caffe2、Chainer、Ker
 - 本教程安装的版本是：`pytorch:1.12.0`、`cuda11.3`、`cudnn8`。
 
 [tensorflow 与 CUDA 版本对应关系](https://www.tensorflow.org/install/source#tested_build_configurations)
+
 [在 PyTorch 主页 可以下载与 cuda 对应的版本](https://pytorch.org/get-started/locally/)
+
 [pytorch 与 CUDA 历史版本](https://pytorch.org/get-started/previous-versions/)
+
 [pytorch docker 与 CUDA](https://github.com/pytorch/pytorch#using-pre-built-images)
+
 [pytorch CUDA 版本对应的 docker 镜像](https://hub.docker.com/r/pytorch/pytorch/tags)，会发现镜像有runtime 和 devel两种tag，下文会做介绍。
 
 ### 3.3 安装CUDA 和 CUDNN
