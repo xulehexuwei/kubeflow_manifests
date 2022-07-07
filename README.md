@@ -1,6 +1,10 @@
 # 安装前
 
-## 1- 配置pv
+## 1- 版本要求
+
+- Kubernetes == 1.21， 不然会失败
+
+## 2- 配置pv
 
 - 因为kubeflow整个项目中声明了6个pvc，如下图所示：
 
@@ -8,14 +12,14 @@
 
 - 所以在正式安装前，先准备好所需要的pv，建议多准备几个，[pv.yaml见](./xuwei_yaml/pv.yaml)
 
-## 2- 安装kustomize
+## 3- 安装kustomize
 
 ```shell
 cd $GOROOT/bin
 sudo curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | sudo bash
 ```
 
-## 3- 安装过程
+## 4- 安装过程
 
 - 在安装过程的每一步骤中，有可能出错，报错的话安装两遍，错误原因可能是因为上一步的还没启动。
 
