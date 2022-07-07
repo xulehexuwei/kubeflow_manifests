@@ -43,7 +43,9 @@ def get_dataset():
     # DDP：使用DistributedSampler，DDP帮我们把细节都封装起来了。用，就完事儿！sampler的原理，第二篇中有介绍。
     train_sampler = torch.utils.data.distributed.DistributedSampler(my_trainset)
 
-    # DDP：需要注意的是，这里的batch_size指的是每个进程下的batch_size。也就是说，总batch_size是这里的batch_size再乘以并行数(world_size)。
+    # DDP：需要注意的是，这里的batch_size指的是每个进程下的batch_size。假如有64条数据，2个GPU数据并行，那么每个GPU被分32条数据，
+    # 这里batch_size=16，说明每个GPU下还会把32条数据拆分成每16条一份，这样每个进程中的min batch就是2（迭代2次）。
+    # num_workers（创建多线程，提前加载未来会用到的batch数据）工作者数量，默认是0。使用多少个子进程来导入数据。设置为0，就是使用主进程来导入数据。注意：这个数字必须是大于等于0的，负数估计会出错。
     trainloader = torch.utils.data.DataLoader(my_trainset, batch_size=16, num_workers=2, sampler=train_sampler)
     return trainloader
 
