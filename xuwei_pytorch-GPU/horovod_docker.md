@@ -43,7 +43,7 @@ horovodrun -np 4 -H localhost:4 python  pytorch_mnist.py
 上面的命令等价 (单机多卡间无法通信，miss rank 或者 Connection reset by peer 通过启动docker 时加上 --ipc=host 共享主机内存解决)
 
 ```shell
-mpirun -np 4 \
+mpirun --allow-run-as-root -np 4 \
     -bind-to none -map-by slot \
     -x NCCL_DEBUG=INFO -x LD_LIBRARY_PATH -x PATH \
     -mca pml ob1 -mca btl ^openib \

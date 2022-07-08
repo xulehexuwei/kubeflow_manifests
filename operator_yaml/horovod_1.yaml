@@ -1,7 +1,7 @@
 apiVersion: kubeflow.org/v1alpha2
 kind: MPIJob
 metadata:
-  name: horovod-tensorflow-mnist
+  name: kubeflow-mpi-horovod-mnist
 spec:
   slotsPerWorker: 1
   runPolicy:
@@ -16,7 +16,6 @@ spec:
             name: mpi-launcher
             command:
             - mpirun
-            args:
             - -np
             - "2"
             - --allow-run-as-root
