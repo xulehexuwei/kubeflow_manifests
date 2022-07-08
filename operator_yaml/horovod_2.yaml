@@ -1,0 +1,49 @@
+apiVersion: kubeflow.org/v1alpha2
+kind: MPIJob
+metadata:
+  name: horovod-tensorflow-mnist
+spec:
+  slotsPerWorker: 1
+  runPolicy:
+    cleanPodPolicy: Running
+  mpiReplicaSpecs:
+    Launcher:
+      replicas: 1
+      template:
+        spec:
+          containers:
+          - image: docker.io/horovod/horovod:latest
+            name: mpi-launcher
+            command:
+            - mpirun
+            args:
+            - -np
+            - "2"
+            - -bind-to
+            - none
+            - -map-by
+            - slot
+            - -x
+            - NCCL_DEBUG=INFO
+            - -x
+            - LD_LIBRARY_PATH
+            - -x
+            - PATH
+            - -mca
+            - pml
+            - ob1
+            - -mca
+            - btl
+            - ^openib
+            - python
+            - /horovod/examples/pytorch/pytorch_mnist.py
+    Worker:
+      replicas: 2
+      template:
+        spec:
+          containers:
+          - image: docker.io/horovod/horovod:latest
+            name: mpi-worker
+            resources:
+              limits:
+                nvidia.com/gpu: 1
