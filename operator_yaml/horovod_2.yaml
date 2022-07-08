@@ -1,7 +1,7 @@
 apiVersion: kubeflow.org/v1alpha2
 kind: MPIJob
 metadata:
-  name: horovod-tensorflow-mnist
+  name: horovod-horovod
 spec:
   slotsPerWorker: 1
   runPolicy:
