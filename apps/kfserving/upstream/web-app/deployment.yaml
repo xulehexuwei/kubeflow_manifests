@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - image: kfserving/models-web-app:v0.6.1
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent 
         name: kfserving-models-web-app
         envFrom:
           - configMapRef:

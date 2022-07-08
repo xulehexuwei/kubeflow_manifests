@@ -24,7 +24,7 @@ spec:
         - name: VERTA_MODELDB_CONFIG
           value: /config-backend/config.yaml
         image: vertaaiofficial/modeldb-backend:kubeflow
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent 
         name: modeldb-backend
         ports:
         - containerPort: 8085

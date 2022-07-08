@@ -15,7 +15,7 @@ spec:
       containers:
         - name: cert-generator
           image: docker.io/kubeflowkatib/cert-generator
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent 
           command: ["./katib-cert-generator"]
           args: ["generate", "--namespace=$(KATIB_CORE_NAMESPACE)"]
           env:

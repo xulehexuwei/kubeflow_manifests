@@ -22,7 +22,7 @@ spec:
       - command:
         - /manager
         image: ko://github.com/kubeflow/kfserving/cmd/manager
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent 
         name: manager
         env:
           - name: POD_NAMESPACE

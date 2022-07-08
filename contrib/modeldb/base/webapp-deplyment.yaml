@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - image: vertaaiofficial/modeldb-frontend:kubeflow
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent 
         name: modeldb-webapp
         ports:
         - containerPort: 3000

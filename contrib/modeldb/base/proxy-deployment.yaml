@@ -30,7 +30,7 @@ spec:
         command:
         - /go/bin/proxy
         image: vertaaiofficial/modeldb-backend-proxy:kubeflow
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent 
         name: modeldb-backend-proxy
         ports:
         - containerPort: 8080

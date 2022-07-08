@@ -371,7 +371,7 @@ spec:
       containers:
         - name: driver-registrar
           image: "quay.io/k8scsi/csi-node-driver-registrar:v1.2.0"
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent 
           args:
             - --v=5
             - --csi-address=/csi/csi.sock
@@ -394,7 +394,7 @@ spec:
               name: registration-dir
         - name: kfp-csi-s3
           image: "quay.io/datashim/csi-s3:latest-amd64"
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent 
           args:
             - "--v=5"
             - "--endpoint=$(CSI_ENDPOINT)"
@@ -461,7 +461,7 @@ spec:
       containers:
         - name: csi-attacher
           image: "quay.io/k8scsi/csi-attacher:v2.2.0"
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent 
           args:
             - --v=5
             - --csi-address=/csi/csi.sock
@@ -502,7 +502,7 @@ spec:
       containers:
         - name: csi-provisioner
           image: "quay.io/k8scsi/csi-provisioner:v2.0.2"
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent 
           args:
             - -v=5
             - --csi-address=/csi/csi.sock

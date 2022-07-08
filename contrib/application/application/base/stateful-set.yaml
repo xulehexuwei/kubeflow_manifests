@@ -19,7 +19,7 @@ spec:
         command:
         - /root/manager
         image: gcr.io/kubeflow-images-public/kubernetes-sigs/application
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent 
         env:
         # TODO(https://github.com/kubeflow/manifests/issues/1043)
         # Do we really need this?

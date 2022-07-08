@@ -25,7 +25,7 @@ spec:
         - name: VERTA_ARTIFACT_CONFIG
           value: /config/config.yaml
         image: vertaaiofficial/modeldb-artifact-store:kubeflow
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent 
         name: modeldb-artifact-store
         ports:
         - containerPort: 8086
