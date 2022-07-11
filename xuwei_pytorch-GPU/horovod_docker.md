@@ -19,7 +19,7 @@ docker pull horovod/horovod:latest
 - 进入容器，容器环境已经把很多依赖都装好了，比如 `nvidia-smi`、`torch`、`tensorflow`、`mpirun` 等
 ```shell
 # --ipc=host 共享主机内存，单机多卡通信要用到
-docker run --gpus all --rm -ti --ipc=host horovod/horovod:latest
+docker run --gpus all --rm -ti --ipc=host horovod/horovod:latest bash
 ```
 
 ![horovod-container](../docs/images/horovod-container.png)
@@ -35,19 +35,30 @@ docker run --gpus all --rm -ti --ipc=host horovod/horovod:latest
 - 容器中已经包含了很多case，选取其中一个，执行下面的命令运行：
 
 ```shell
-# horovodrun 引入了一个方便的、基于 Open MPI 的包装器，用于运行 Horovod 脚本。
+nvidia-docker run -it --rm horovod/horovod:latest bash
+# 或
+docker run -it --rm horovod/horovod:latest bash
 
-horovodrun -np 4 -H localhost:4 python  pytorch_mnist.py
+# 进入/horovod/examples/pytorch目录，执行
+horovodrun -np 2 -H localhost:2 python pytorch_mnist.py
+```
+
+```shell
+nvidia-docker run -it --rm -v /home/autel/xuwei/test_py:/horovod/examples/test_py horovod/horovod:latest bash
+
+# 进入/horovod/examples/test_py目录，执行
+horovodrun -np 4 -H localhost:4 python ddp_case1_horovod.py
 ```
 
 上面的命令等价 (单机多卡间无法通信，miss rank 或者 Connection reset by peer 通过启动docker 时加上 --ipc=host 共享主机内存解决)
-
 ```shell
 mpirun --allow-run-as-root -np 4 \
     -bind-to none -map-by slot \
     -x NCCL_DEBUG=INFO -x LD_LIBRARY_PATH -x PATH \
     -mca pml ob1 -mca btl ^openib \
     python pytorch_mnist.py
+    
+mpirun --allow-run-as-root -np 4  -bind-to none -map-by slot  -x NCCL_DEBUG=INFO -x LD_LIBRARY_PATH -x PATH -x LD_LIBRARY_PATH -x HOROVOD_MPI_THREADS_DISABLE=1  -mca pml ob1 -mca btl ^openib  python ddp_case1_horovod.py
 ```
 
 ![horovod-case](../docs/images/horovod-case.png)
