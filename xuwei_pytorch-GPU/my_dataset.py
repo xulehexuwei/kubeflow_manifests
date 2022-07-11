@@ -3,6 +3,12 @@ import argparse
 import torch.distributed as dist
 from torch.utils.data import DataLoader, RandomSampler
 
+"""
+Pytorch使用的是数据分布式训练，每个进程实际上是独立加载数据的，所以需要加载相同数据集后用一定的规则根据rank来顺序切割获取不同的数据子集，
+DistributedSampler就是用来确保dataloader只会load到整个数据集的一个特定子集的做法(实际上不用Pytorch提供的DistributedSampler工具，
+自己做加载数据后切分word_size个子集按rank顺序拿到子集效果也是一样)。
+"""
+
 class MyDataset(torch.utils.data.Dataset):
     def __init__(self, data_path, ):
 
