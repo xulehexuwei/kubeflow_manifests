@@ -44,7 +44,7 @@ horovodrun -np 2 -H localhost:2 python pytorch_mnist.py
 ```
 
 ```shell
-nvidia-docker run -it --rm -v /home/autel/xuwei/test_py:/horovod/examples/test_py horovod/horovod:latest bash
+docker run -it --rm -v /home/autel/xuwei/test_py:/horovod/examples/test_py horovod/horovod:latest bash
 
 # 进入/horovod/examples/test_py目录，执行
 horovodrun -np 4 -H localhost:4 python ddp_case1_horovod.py

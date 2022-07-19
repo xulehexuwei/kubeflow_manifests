@@ -134,6 +134,8 @@ Anaconda 在安装 Pytorch 等会使用到 CUDA 的框架时，会自动为用�
 
 ## 6- docker pytorch 容器使用 GPU 进行训练
 
+[参考](https://github.com/NVIDIA/k8s-device-plugin#running)
+
 ### 6.1 让docker能够使用GPU
 
 若 docker 版本 > 19.03 则不需要安装 nvidia-docker ，只需要安装 nvidia-container-tookit，步骤如下：
@@ -149,12 +151,31 @@ distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
 ```shell
 sudo apt-get update
 sudo apt-get install -y nvidia-container-toolkit
+```
+
+- 修改配置
+edit the config file which is usually present at /etc/docker/daemon.json to set up nvidia-container-runtime as the default low-level runtime:
+
+```json
+{
+    "default-runtime": "nvidia",
+    "runtimes": {
+        "nvidia": {
+            "path": "/usr/bin/nvidia-container-runtime",
+            "runtimeArgs": []
+        }
+    }
+}
+```
+
+- 重启docker
+```shell
 sudo systemctl restart docker
 ```
 
 - 验证安装是否成功
 ```shell
-sudo docker run --rm --gpus all nvidia/cuda:10.0-base nvidia-smi
+sudo docker run --rm --gpus all nvidia/cuda:11.0.3-base-ubuntu20.04 nvidia-smi
 ```
 成功见下图
 ![成功](../docs/images/docker_gpu.png)
