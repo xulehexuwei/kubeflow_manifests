@@ -102,11 +102,10 @@ cuDNN 可加速广泛应用的深度学习框架，包括 Caffe2、Chainer、Ker
 
 ## 4- 安装 NVIDIA NCCL 软件包
 
-```shell
-git clone https://github.com/NVIDIA/nccl.git
-cd nccl
-sudo make install -j4
-```
+[安装教程](https://docs.nvidia.com/deeplearning/nccl/install-guide/index.html)
+
+[安装教程2](https://github.com/NVIDIA/nccl)
+
 
 
 ## 5- docker-cuda runtime 和 devel 区别
@@ -203,7 +202,7 @@ docker pull pytorch/pytorch:1.12.0-cuda11.3-cudnn8-runtime
 - `/home/ubuntu/xuwei/pytorch_ddp` 是本机存放 `ddp_case1.py` 的目录，挂载到容器的`workspace`目录中，运行下面的命令启动容器：
 
 ```shell
-docker run --gpus all --rm -ti --ipc=host -v /home/ubuntu/xuwei/pytorch_ddp:/workspace  pytorch/pytorch:1.12.0-cuda11.3-cudnn8-runtime
+docker run --gpus all --rm -ti --ipc=host -v /home/autel/xuwei/test_py:/workspace  pytorch/pytorch:1.12.0-cuda11.3-cudnn8-runtime
 ```
 PyTorch使用共享内存在进程之间共享数据，因此如果使用torch多处理（例如，对于多线程数据加载程序），容器运行的默认共享内存段大小是不够的， 
 您应该使用--ipc=host或--shm-size命令行选项来增加共享内存大小以运行nvidia-docker。
@@ -215,7 +214,7 @@ PyTorch使用共享内存在进程之间共享数据，因此如果使用torch�
 # DDP: 使用torch.distributed.launch启动DDP模式
 # 使用CUDA_VISIBLE_DEVICES，来决定使用哪些GPU
 
-CUDA_VISIBLE_DEVICES="0,1" python -m torch.distributed.launch --nproc_per_node 2 ddp_case1.py
+CUDA_VISIBLE_DEVICES="0,1,2,3" python -m torch.distributed.launch --nproc_per_node 4 ddp_case1.py
 ```
 
 ![pytorch_run](../docs/images/pytorch_run.png)

@@ -48,6 +48,8 @@ docker run -it --rm -v /home/autel/xuwei/test_py:/horovod/examples/test_py horov
 
 # 进入/horovod/examples/test_py目录，执行
 horovodrun -np 4 -H localhost:4 python ddp_case1_horovod.py
+
+mpirun --allow-run-as-root -n 4 --bind-to none -map-by slot -x NCCL_DEBUG=INFO -x LD_LIBRARY_PATH python ddp_case1_horovod.py
 ```
 
 上面的命令等价 (单机多卡间无法通信，miss rank 或者 Connection reset by peer 通过启动docker 时加上 --ipc=host 共享主机内存解决)
