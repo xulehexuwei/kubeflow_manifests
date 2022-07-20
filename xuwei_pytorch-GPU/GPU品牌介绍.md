@@ -9,3 +9,7 @@
 
 总的来说，本地运算首选英伟达GPU，它在深度学习上的支持度比AMD好很多；云计算首选谷歌TPU，它的性价比超过亚马逊AWS和微软Azure。
 训练阶段使用TPU，原型设计和推理阶段使用本地GPU，可以帮你节约成本。如果对项目deadline或者灵活性有要求，请选择成本更高的云GPU。
+
+```shell
+CUDA_VISIBLE_DEVICES=7,8  ./build/all_reduce_perf -b 8 -e 128M -f 2 -g 2
+```
