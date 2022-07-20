@@ -101,7 +101,7 @@ if __name__ == '__main__':
                 print('Train Epoch: {} [{}/{}]\tLoss: {:.6f}'.format(
                     epoch, len(data), len(trainloader.sampler), loss.item()))
 
-        # 只需要在进程0上保存一次就行了，避免多次保存重复的东西。
+        # xw TODO 只需要在进程0上保存一次就行了，避免多次保存重复的东西。
         if hvd.rank() == 0:
             # torch.save(net,path) —> 保存整个模型；
             # torch.save(net.state_dict(),path) --> 保存模型的参数。
