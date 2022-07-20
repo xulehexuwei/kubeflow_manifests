@@ -6,6 +6,10 @@
 
 [安装教程](https://zhuanlan.zhihu.com/p/452075116)
 [驱动下载](https://www.nvidia.com/download/index.aspx)
+[cuda下载](https://developer.nvidia.com/cuda-toolkit-archive)
+[cudnn下载](https://developer.nvidia.com/rdp/cudnn-archive)
+[nccl下载](https://developer.nvidia.com/nccl/nccl-download)
+[nccl 对应支持的cuda版本 下载](https://docs.nvidia.com/deeplearning/nccl/release-notes/rel_2-11-4.html#rel_2-11-4)
 
 
 首先使用 `nvidia-smi` 命令，测试是否已经安装好驱动，如果没该命令，按如下步骤安装：
@@ -19,10 +23,10 @@ sudo apt update
 
 - 2、安装下载好的驱动文件
 
-nvidia-driver-local-repo-ubuntu1804-460.106.00_1.0-1_amd64.deb
+nvidia-driver-local-repo-ubuntu1804-470.129.06_1.0-1_amd64.deb
 
 ```shell
-sudo dpkg -i nvidia-driver-local-repo-ubuntu1804-460.106.00_1.0-1_amd64.deb
+sudo dpkg -i nvidia-driver-local-repo-ubuntu1804-470.129.06_1.0-1_amd64.deb
 
 sudo apt update
 ```
@@ -65,11 +69,10 @@ sudo sh cuda_11.2.2_460.32.03_linux.run
 
 #export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda-11.2/lib64
 #export PATH=$PATH:/usr/local/cuda-11.2/bin
-#export CUDA_HOME=$CUDA_HOME:/usr/local/cuda-11.2
-
 #export PATH=/usr/local/cuda-11.2/bin:$PATH
 #export LD_LIBRARY_PATH=/usr/local/cuda-11.2/lib64:$LD_LIBRARY_PATH
 
+export CUDA_HOME=$CUDA_HOME:/usr/local/cuda-11.4
 export PATH=/usr/local/cuda-11.2/bin:/usr/local/cuda-11.2/nsight-compute-2020.3.1${PATH:+:${PATH}}
 export LD_LIBRARY_PATH=/usr/local/cuda-11.2/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 
@@ -77,6 +80,7 @@ export LD_LIBRARY_PATH=/usr/local/cuda-11.2/lib64${LD_LIBRARY_PATH:+:${LD_LIBRAR
 
 - source ~/.bashrc
 
+- To uninstall the CUDA Toolkit, run cuda-uninstaller in /usr/local/cuda-11.4/bin
 
 ## 安装cudnn
 
@@ -91,9 +95,9 @@ libcudnn8-samples_8.1.1.33-1+cuda11.2_amd64.deb
 - 安装
 ```shell
 #依次安装
-sudo dpkg -i libcudnn8_8.1.1.33-1+cuda11.2_amd64.deb
-sudo dpkg -i libcudnn8-dev_8.1.1.33-1+cuda11.2_amd64.deb
-sudo dpkg -i libcudnn8-samples_8.1.1.33-1+cuda11.2_amd64.deb
+sudo dpkg -i libcudnn8_8.2.4.15-1+cuda11.4_amd64.deb
+sudo dpkg -i libcudnn8-dev_8.2.4.15-1+cuda11.4_amd64.deb
+sudo dpkg -i libcudnn8-samples_8.2.4.15-1+cuda11.4_amd64.deb
 
 #官方说法：To verify that cuDNN is installed and is running properly, compile the mnistCUDNN sample located in the /usr/src/cudnn_samples_v8 directory in the debian file.
 #0. Copy the cuDNN sample to a writable path.
@@ -119,17 +123,48 @@ cat /usr/include/cudnn_version.h | grep CUDNN_MAJOR -A 2
 
 ## 安装nccl
 
-- 两种方法
+[参考](https://www.cnblogs.com/chenzhen0530/p/13885258.html)
+- NCCL (NVIDIA Colloctive Comunications Library)是英伟达的一款直接与GPU交互的库。
+- NCCL（NVIDA Collective Communications Library）目的是为了实现Multi-GPU或Multi-node之间的通信；
 
-### 1- 通过github项目 nccl 安装
+有两种安装方式，一是具有root权限的安装，二是不具有root权限的安装配置；
+
+
+### 1- root 权限安装
+
+1. 下载deb文件
+官网下载地址：https://developer.nvidia.com/nccl/nccl-download
+注意版本与你的cuda适配。
+
+2.安装
+
+获得.deb安装文件如：nccl-local-repo-ubuntu1804-2.8.4-cuda11.2_1.0-1_amd64.deb后
+
+```shell
+sudo dpkg -i nccl-local-repo-ubuntu1804-2.8.4-cuda11.2_1.0-1_amd64.deb  # 安装
+# 如果提示缺少公共CUDA GPG秘钥
+sudo apt-key add /var/nccl-repo-2.8.3-ga-cuda10.2/7fa2af80.pub
+
+# 必不可少更新
+sudo apt update
+# 需指定版本，和上面的nccl一致
+sudo apt install libnccl2=2.11.4-1+cuda11.4 libnccl-dev=2.11.4-1+cuda11.4
+```
+
+
+### 2- 非root用户安装配置NCCL
+
+其实多数情况下，我们都不具有root权限，那么如果root管理员也没有为我们在使用的服务器安装配置NCCL，那么就需要我们自己将NCCL配置在个人账号下；那么方法就是从源码进行编译安装；
+
+- 通过github项目 nccl 安装
 
 ```shell
 git clone https://github.com/NVIDIA/nccl.git
 
 cd nccl
 
-make src.build CUDA_HOME=/usr/local/cuda-11.2
-
+# https://arnon.dk/tag/gpu/
+sudo make src.build CUDA_HOME=/usr/local/cuda-11.4 NVCC_GENCODE="-gencode=arch=compute_87,code=sm_87"
 ```
 
 then
@@ -146,25 +181,15 @@ cd build/pkg/deb/
 sudo dpkg -i *.deb
 ```
 
-### 2- 下载deb文件 安装
-NCCL (NVIDIA Colloctive Comunications Library)是英伟达的一款直接与GPU交互的库。
-安装cupy前需要先安装该库。
+### 测试GPU
 
-1. 下载
-官网下载地址：https://developer.nvidia.com/nccl/nccl-download
-注意版本与你的cuda适配。
-
-2.安装
-
-获得.deb安装文件如：nccl-local-repo-ubuntu1804-2.8.4-cuda11.2_1.0-1_amd64.deb后
+Tests for NCCL are maintained separately at https://github.com/nvidia/nccl-tests.
 
 ```shell
-sudo dpkg -i nccl-local-repo-ubuntu1804-2.8.4-cuda11.2_1.0-1_amd64.deb  # 安装
-# 如果提示缺少公共CUDA GPG秘钥
-sudo apt-key add /var/nccl-repo-2.8.3-ga-cuda10.2/7fa2af80.pub
+$ git clone https://github.com/NVIDIA/nccl-tests.git
+$ cd nccl-tests
+$ make
+$ ./build/all_reduce_perf -b 8 -e 256M -f 2 -g <ngpus>
 
-# 必不可少更新
-sudo apt update
-# 需指定版本，和上面的nccl一致
-sudo apt install libnccl2=2.8.4-1+cuda11.2 libnccl-dev=2.8.4-1+cuda11.2
+$ CUDA_VISIBLE_DEVICES=2,3  ./build/all_reduce_perf -b 8 -e 256M -f 2 -g 2
 ```
