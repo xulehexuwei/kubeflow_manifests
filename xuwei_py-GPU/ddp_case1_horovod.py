@@ -9,7 +9,7 @@ import horovod.torch as hvd
 
 
 ### 1. 基础模块 ###
-# 假设我们的模型是这个，与DDP无关
+# 假设我们的模型是这个
 class ToyModel(nn.Module):
     def __init__(self):
         super(ToyModel, self).__init__()
