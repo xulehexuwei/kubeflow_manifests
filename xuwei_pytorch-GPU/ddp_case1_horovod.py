@@ -98,8 +98,8 @@ if __name__ == '__main__':
 
             # 打印参数看看
             if batch_idx % 100 == 0:
-                print('Train Epoch: {} [{}/{}]\tLoss: {:.6f}'.format(
-                    epoch, len(data), len(trainloader.sampler), loss.item()))
+                print('Train Epoch: {}，hvd.rank: {} [{}/{}]\tLoss: {:.6f}'.format(
+                    epoch, hvd.rank(), len(data), len(trainloader.sampler), loss.item()))
 
         # xw TODO 只需要在进程0上保存一次就行了，避免多次保存重复的东西。
         if hvd.rank() == 0:
