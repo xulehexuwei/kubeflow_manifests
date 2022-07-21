@@ -3,12 +3,14 @@
 
 docker 已经可以使用GPU
 
-[docker配置GPU](./docker_use_GPU.md)
+[docker配置GPU](./GPU_docker_load.md)
 
 ## 1- 拉取 pytorch-cuda 镜像
 
 - 从 Docker Hub 拉取预先构建的 docker 映像并使用 docker v19.03+ 运行
 - 注意：这里面pytorch版本和cuda版本一定要对应上，版本兼容问题是个大问题，不然有可能出现各种未知bug。
+
+[镜像链接](https://hub.docker.com/r/pytorch/pytorch/tags)
 
 ```shell
 docker pull pytorch/pytorch:1.12.0-cuda11.3-cudnn8-runtime

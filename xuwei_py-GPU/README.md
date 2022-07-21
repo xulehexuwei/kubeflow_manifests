@@ -108,8 +108,13 @@ cuDNN 可加速广泛应用的深度学习框架，包括 Caffe2、Chainer、Ker
 
 # 导航
 
-[CUDA runtime and dev 介绍](./cuda_runtime_dev_info.md)
+[CUDA runtime and dev 介绍](./GPU_cuda_runtime_dev.md)
 
-[让docker容器可以使用GPU](./docker_use_GPU.md)
+[让docker容器可以使用GPU](./GPU_docker_load.md)
 
-[pytorch ddp 分布式训练在docker 中使用GPU 完成](./pytorch_docker_GPU.md)
+[pytorch ddp 分布式训练在docker 中使用GPU 完成](./GPU_docker_pytorch.md)
+
+[GPU通信后端](./GPU-通信后端.md)
+
+[horovod 分布式训练在docker 中使用GPU 完成](./GPU_docker_horovod.md)
+
