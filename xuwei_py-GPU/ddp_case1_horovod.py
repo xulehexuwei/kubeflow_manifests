@@ -10,9 +10,9 @@ import horovod.torch as hvd
 
 ### 1. 基础模块 ###
 # 假设我们的模型是这个
-class ToyModel(nn.Module):
+class MyModel(nn.Module):
     def __init__(self):
-        super(ToyModel, self).__init__()
+        super(MyModel, self).__init__()
         self.conv1 = nn.Conv2d(3, 6, 5)
         self.pool = nn.MaxPool2d(2, 2)
         self.conv2 = nn.Conv2d(6, 16, 5)
@@ -58,7 +58,7 @@ if __name__ == '__main__':
         torch.cuda.set_device(hvd.local_rank())
 
     # 构造模型 xw TODO
-    model = ToyModel().cuda()
+    model = MyModel().cuda()
     print(f"model cuda success")
 
     optimizer = torch.optim.SGD(model.parameters(), lr=0.001)
