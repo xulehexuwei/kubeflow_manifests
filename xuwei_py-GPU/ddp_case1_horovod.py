@@ -46,7 +46,7 @@ def get_dataset():
 
     # DDP：需要注意的是，这里的batch_size指的是每个进程下的batch_size。假如有64条数据，2个GPU数据并行，那么每个GPU被分32条数据，
     # 这里batch_size=16，说明每个GPU下还会把32条数据拆分成每16条一份，这样每个进程中的min batch就是2（迭代2次）。
-    trainLoader = torch.utils.data.DataLoader(my_trainset, batch_size=2000, sampler=train_sampler)
+    trainLoader = torch.utils.data.DataLoader(my_trainset, batch_size=16, num_workers=2, sampler=train_sampler)
     return trainLoader
 
 if __name__ == '__main__':
@@ -54,11 +54,11 @@ if __name__ == '__main__':
     # xw TODO
     hvd.init()
     # Horovod: pin GPU to local rank. 分配GPU到单个进程, 典型的设置是 1 个 GPU 一个进程，即设置 local rank。
-    if torch.cuda.is_available():
-        torch.cuda.set_device(hvd.local_rank())
+    # if torch.cuda.is_available():
+    torch.cuda.set_device(hvd.local_rank())
 
     # 构造模型 xw TODO
-    model = MyModel().cuda()
+    model = MyModel().to(hvd.local_rank())
     print(f"model cuda success")
 
     optimizer = torch.optim.SGD(model.parameters(), lr=0.001)
@@ -69,14 +69,14 @@ if __name__ == '__main__':
     # print(f"broadcast cuda success")
 
     # xw TODO 分布式优化器，包裹原来的优化器，进行all-reduce
-    optimizer = hvd.DistributedOptimizer(optimizer, named_parameters=model.named_parameters())
+    optimizer = hvd.DistributedOptimizer(optimizer, op=hvd.Adasum)
     print(f"DistributedOptimizer success")
 
     # 准备数据，分布式采样
     trainLoader = get_dataset()
     print(f"trainLoader success")
     # 假设我们的loss是这个
-    loss_func = nn.CrossEntropyLoss().cuda()
+    loss_func = nn.CrossEntropyLoss().to(hvd.local_rank())
 
     ### 模型训练  ###
     print(f"start train")
@@ -88,7 +88,7 @@ if __name__ == '__main__':
         trainLoader.sampler.set_epoch(epoch)
         # 后面这部分，则与原来完全一致了。
         for batch_idx, (data, label) in enumerate(trainLoader):
-            data, label = data.cuda(), label.cuda()
+            data, label = data.to(hvd.local_rank()), label.to(hvd.local_rank())
             optimizer.zero_grad()
             prediction = model(data)
             loss = loss_func(prediction, label)
