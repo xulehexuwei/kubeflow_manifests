@@ -62,15 +62,14 @@ if __name__ == '__main__':
     print(f"model cuda success")
 
     optimizer = torch.optim.SGD(model.parameters(), lr=0.001)
+    # xw TODO 分布式优化器，包裹原来的优化器，进行all-reduce
+    optimizer = hvd.DistributedOptimizer(optimizer, named_parameters=model.named_parameters())
+    print(f"DistributedOptimizer success")
 
     # xw TODO Horovod: broadcast parameters & optimizer state.
-    # hvd.broadcast_parameters(model.state_dict(), root_rank=0)
-    # hvd.broadcast_optimizer_state(optimizer, root_rank=0)
-    # print(f"broadcast cuda success")
-
-    # xw TODO 分布式优化器，包裹原来的优化器，进行all-reduce
-    optimizer = hvd.DistributedOptimizer(optimizer, op=hvd.Adasum)
-    print(f"DistributedOptimizer success")
+    hvd.broadcast_parameters(model.state_dict(), root_rank=0)
+    hvd.broadcast_optimizer_state(optimizer, root_rank=0)
+    print(f"broadcast cuda success")
 
     # 准备数据，分布式采样
     trainLoader = get_dataset()
