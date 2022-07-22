@@ -48,3 +48,28 @@ watch -n 10 nvidia-smi
 
 在上面的虚线框里显示了占用GPU的进程信息。每个进程有一个唯一的PID，如果想关闭掉某个进程，可以使用命令sudo kill -9 PID。
 比如我这里要结束掉占用GPU内存最大的PID为12713的进程，则执行命令sudo kill -9 12713，然后再查看GPU使用情况。
+
+
+## 4- 多节点分布式训练
+
+假设一共有两台机器（节点1和节点2），每个节点上有8张卡，节点1的IP地址为192.168.1.1 占用的端口12355（端口可以更换），启动的方式如下：
+
+```shell
+#节点1
+python -m torch.distributed.launch --nproc_per_node=8
+           --nnodes=2 --node_rank=0 --master_addr="192.168.1.1"
+           --master_port=12355 MNIST.py
+#节点2
+python -m torch.distributed.launch --nproc_per_node=8
+           --nnodes=2 --node_rank=1 --master_addr="192.168.1.1"
+           --master_port=12355 MNIST.py
+```
+
+上例子中，如果只要启动一台机器，只需要将nnodes数量改为1，就是单机多卡的另一种方式。设置如下：
+
+```shell
+#节点1
+python -m torch.distributed.launch --nproc_per_node=8
+           --nnodes=1 --node_rank=0 --master_addr="192.168.1.1"
+           --master_port=12355 MNIST.py
+```
