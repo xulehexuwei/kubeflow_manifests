@@ -17,3 +17,5 @@
 
 [horovod 分布式训练在docker 中使用GPU 完成](./GPU_docker_horovod.md)
 
+[分布式训练流程图]()
+
