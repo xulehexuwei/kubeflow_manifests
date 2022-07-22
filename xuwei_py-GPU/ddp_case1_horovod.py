@@ -46,8 +46,8 @@ def get_dataset():
 
     # DDP：需要注意的是，这里的batch_size指的是每个进程下的batch_size。假如有64条数据，2个GPU数据并行，那么每个GPU被分32条数据，
     # 这里batch_size=16，说明每个GPU下还会把32条数据拆分成每16条一份，这样每个进程中的min batch就是2（迭代2次）。
-    trainloader = torch.utils.data.DataLoader(my_trainset, batch_size=2000, sampler=train_sampler)
-    return trainloader
+    trainLoader = torch.utils.data.DataLoader(my_trainset, batch_size=2000, sampler=train_sampler)
+    return trainLoader
 
 if __name__ == '__main__':
 
@@ -73,8 +73,8 @@ if __name__ == '__main__':
     print(f"DistributedOptimizer success")
 
     # 准备数据，分布式采样
-    trainloader = get_dataset()
-    print(f"trainloader success")
+    trainLoader = get_dataset()
+    print(f"trainLoader success")
     # 假设我们的loss是这个
     loss_func = nn.CrossEntropyLoss().cuda()
 
@@ -85,9 +85,9 @@ if __name__ == '__main__':
     for epoch in iterator:
         # DistributedSampler需要这个来指定shuffle方式，
         # 通过维持各个进程之间的相同随机数种子使不同进程能获得同样的shuffle效果。
-        trainloader.sampler.set_epoch(epoch)
+        trainLoader.sampler.set_epoch(epoch)
         # 后面这部分，则与原来完全一致了。
-        for batch_idx, (data, label) in enumerate(trainloader):
+        for batch_idx, (data, label) in enumerate(trainLoader):
             data, label = data.cuda(), label.cuda()
             optimizer.zero_grad()
             prediction = model(data)
@@ -99,7 +99,7 @@ if __name__ == '__main__':
             # 打印参数看看
             if batch_idx % 100 == 0:
                 print('Train Epoch: {}，hvd.rank: {} [{}/{}]\tLoss: {:.6f}'.format(
-                    epoch, hvd.rank(), len(data), len(trainloader.sampler), loss.item()))
+                    epoch, hvd.rank(), len(data), len(trainLoader.sampler), loss.item()))
 
         # xw TODO 只需要在进程0上保存一次就行了，避免多次保存重复的东西。
         if hvd.rank() == 0:

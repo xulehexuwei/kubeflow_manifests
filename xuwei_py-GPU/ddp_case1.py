@@ -100,7 +100,7 @@ if __name__ == '__main__':
         # 通过维持各个进程之间的相同随机数种子使不同进程能获得同样的shuffle效果，每轮训练后打乱数据顺序，让下轮训练GPU拿到的训练数据不一样
         trainLoader.sampler.set_epoch(epoch)
         # 后面这部分，则与原来完全一致了。
-        for data, label in trainLoader:
+        for batch_idx, (data, label) in enumerate(trainLoader):
             data, label = data.to(local_rank), label.to(local_rank)
             optimizer.zero_grad()
             prediction = model(data)
@@ -108,6 +108,11 @@ if __name__ == '__main__':
             loss.backward()
             iterator.desc = "loss = %0.3f" % loss
             optimizer.step()
+
+            # 打印参数看看
+            if batch_idx % 100 == 0:
+                print('Train Epoch: {}，hvd.rank: {} [{}/{}]\tLoss: {:.6f}'.format(
+                    epoch, local_rank, len(data), len(trainLoader.sampler), loss.item()))
 
         # 1. save模型的时候，和DP模式一样，有一个需要注意的点：保存的是model.module而不是model。 因为model其实是DDP model，参数是被`model=DDP(model)`包起来的。
         # 2. 只需要在进程0上保存一次就行了，避免多次保存重复的东西。
