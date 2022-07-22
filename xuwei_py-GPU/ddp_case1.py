@@ -123,4 +123,4 @@ if __name__ == '__main__':
 ## Bash运行
 # DDP: 使用torch.distributed.launch启动DDP模式
 # 使用CUDA_VISIBLE_DEVICES，来决定使用哪些GPU
-# CUDA_VISIBLE_DEVICES="0,1" python -m torch.distributed.launch --nproc_per_node 2 ddp_case1.py
+# CUDA_VISIBLE_DEVICES="0,1,2,3" python -m torch.distributed.launch --nproc_per_node 4 ddp_case1.py
