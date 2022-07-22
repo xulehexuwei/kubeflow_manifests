@@ -109,10 +109,10 @@ if __name__ == '__main__':
             iterator.desc = "loss = %0.3f" % loss
             optimizer.step()
 
-            # 打印参数看看
-            if batch_idx % 100 == 0:
-                print('Train Epoch: {}，hvd.rank: {} [{}/{}]\tLoss: {:.6f}'.format(
-                    epoch, local_rank, len(data), len(trainLoader.sampler), loss.item()))
+            # # 打印参数看看
+            # if batch_idx % 100 == 0:
+            #     print('Train Epoch: {}，hvd.rank: {} [{}/{}]\tLoss: {:.6f}'.format(
+            #         epoch, local_rank, len(data), len(trainLoader.sampler), loss.item()))
 
         # 1. save模型的时候，和DP模式一样，有一个需要注意的点：保存的是model.module而不是model。 因为model其实是DDP model，参数是被`model=DDP(model)`包起来的。
         # 2. 只需要在进程0上保存一次就行了，避免多次保存重复的东西。

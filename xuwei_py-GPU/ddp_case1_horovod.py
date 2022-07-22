@@ -64,9 +64,9 @@ if __name__ == '__main__':
     optimizer = torch.optim.SGD(model.parameters(), lr=0.001)
 
     # xw TODO Horovod: broadcast parameters & optimizer state.
-    hvd.broadcast_parameters(model.state_dict(), root_rank=0)
-    hvd.broadcast_optimizer_state(optimizer, root_rank=0)
-    print(f"broadcast cuda success")
+    # hvd.broadcast_parameters(model.state_dict(), root_rank=0)
+    # hvd.broadcast_optimizer_state(optimizer, root_rank=0)
+    # print(f"broadcast cuda success")
 
     # xw TODO 分布式优化器，包裹原来的优化器，进行all-reduce
     optimizer = hvd.DistributedOptimizer(optimizer, named_parameters=model.named_parameters())
@@ -96,10 +96,10 @@ if __name__ == '__main__':
             iterator.desc = "loss = %0.3f" % loss
             optimizer.step()
 
-            # 打印参数看看
-            if batch_idx % 100 == 0:
-                print('Train Epoch: {}，hvd.rank: {} [{}/{}]\tLoss: {:.6f}'.format(
-                    epoch, hvd.rank(), len(data), len(trainLoader.sampler), loss.item()))
+            # # 打印参数看看
+            # if batch_idx % 100 == 0:
+            #     print('Train Epoch: {}，hvd.rank: {} [{}/{}]\tLoss: {:.6f}'.format(
+            #         epoch, hvd.rank(), len(data), len(trainLoader.sampler), loss.item()))
 
         # xw TODO 只需要在进程0上保存一次就行了，避免多次保存重复的东西。
         if hvd.rank() == 0:
