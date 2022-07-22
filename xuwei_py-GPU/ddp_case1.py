@@ -46,7 +46,7 @@ def get_dataset():
     # DDP：需要注意的是，这里的batch_size指的是每个进程下的batch_size。假如有64条数据，2个GPU数据并行，那么每个GPU被分32条数据，
     # 这里batch_size=16，说明每个GPU下还会把32条数据拆分成每16条一份，这样每个进程中的min batch就是2（迭代2次）。
     # num_workers（创建多线程，提前加载未来会用到的batch数据）工作者数量，默认是0。使用多少个子进程来导入数据。设置为0，就是使用主进程来导入数据。注意：这个数字必须是大于等于0的，负数估计会出错。
-    trainLoader = torch.utils.data.DataLoader(my_trainset, batch_size=16, num_workers=2, sampler=train_sampler)
+    trainLoader = torch.utils.data.DataLoader(my_trainset, batch_size=2000,  sampler=train_sampler)
     return trainLoader
 
 if __name__ == '__main__':
