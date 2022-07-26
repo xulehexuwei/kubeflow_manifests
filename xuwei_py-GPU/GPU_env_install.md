@@ -259,10 +259,14 @@ $ CUDA_VISIBLE_DEVICES=2,3  ./build/all_reduce_perf -b 8 -e 256M -f 2 -g 2
 
 ## 延时过长，操作
 
-```shell
+- 解决./p2pBandwidthLatencyTest 测试时，GPU 之间通信时间延长超长的情况，导致的nccl-test不通过
 
+![p2p_nccl](../docs/images/p2p_nccl.png)
+
+```shell
 sudo vim /etc/default/grub
-Make below changes in the file:
+
+# Make below changes in the file:
 
 #GRUB_CMDLINE_LINUX=""                           <----- Original commented
 GRUB_CMDLINE_LINUX="iommu=soft"           <------ Change
