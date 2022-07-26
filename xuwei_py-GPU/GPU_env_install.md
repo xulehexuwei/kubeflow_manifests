@@ -256,3 +256,18 @@ $ ./build/all_reduce_perf -b 8 -e 256M -f 2 -g <ngpus>
 # 测试指定GPU
 $ CUDA_VISIBLE_DEVICES=2,3  ./build/all_reduce_perf -b 8 -e 256M -f 2 -g 2
 ```
+
+## 延时过长，操作
+
+```shell
+
+sudo vim /etc/default/grub
+Make below changes in the file:
+
+#GRUB_CMDLINE_LINUX=""                           <----- Original commented
+GRUB_CMDLINE_LINUX="iommu=soft"           <------ Change
+sudo update-grub
+sudo reboot
+
+# 再次尝试
+```
