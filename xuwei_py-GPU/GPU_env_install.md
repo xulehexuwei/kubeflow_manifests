@@ -263,6 +263,7 @@ $ CUDA_VISIBLE_DEVICES=2,3  ./build/all_reduce_perf -b 8 -e 256M -f 2 -g 2
 
 ![p2p_nccl](../docs/images/p2p_nccl.png)
 
+[问题解决方案参考](https://github.com/pytorch/pytorch/issues/1637#issuecomment-338268158)
 ```shell
 sudo vim /etc/default/grub
 
