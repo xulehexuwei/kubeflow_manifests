@@ -257,6 +257,7 @@ $ ./build/all_reduce_perf -b 8 -e 256M -f 2 -g <ngpus>
 $ CUDA_VISIBLE_DEVICES=2,3  ./build/all_reduce_perf -b 8 -e 256M -f 2 -g 2
 ```
 
+# 常见问题
 ## 延时过长，操作
 
 - 解决./p2pBandwidthLatencyTest 测试时，GPU 之间通信时间延长超长的情况，导致的nccl-test不通过
@@ -275,4 +276,17 @@ sudo update-grub
 sudo reboot
 
 # 再次尝试
+```
+
+## 多节点训练通信问题
+
+错误
+```shell
+RuntimeError: NCCL error in: /opt/conda/conda-bld/pytorch_1656352465323/work/torch/csrc/distributed/c10d/ProcessGroupNCCL.cpp:1191, unhandled system error, NC                                                                   CL version 2.10.3
+ncclSystemError: System call (e.g. socket, malloc) or external library call failed or device error. It can be also caused by unexpected exit of a remote peer,                                                                    you can check NCCL warnings for failure reason and see if there is connection closure by a peer.
+```
+
+- NCCL_IB_DISABLE=1 禁用 nccl 通过 infiniband 建立连接并强制它使用网络套接字。
+```shell
+export NCCL_IB_DISABLE=1
 ```
