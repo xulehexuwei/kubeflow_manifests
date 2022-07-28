@@ -32,7 +32,12 @@ class MyDataset(torch.utils.data.Dataset):
     def __getitem__(self, idx):
         # 每次使用next函数返回生成器生成的一条数据，此处的idx用不到了
         # return x, y 一般返回这种格式训练集，标注集
-        return next(self.data_gen)
+        r = 0
+        for i in range(idx+1):
+            r = next(self.data_gen)
+
+        self.data_gen = self.get_data()
+        return r
 
 
 if __name__ == '__main__':
@@ -54,12 +59,12 @@ if __name__ == '__main__':
     # 需要注意的是，这里的batch_size指的是每个进程下的batch_size。
     # 假如有100条数据，2个GPU数据并行，那么每个GPU被分50条数据，这里batch_size=5，说明每个GPU下还会把50条数据拆分成每5条一份，这样每个进程中的min batch就是10（迭代10次）。
     # num_workers（创建多线程，提前加载未来会用到的batch数据）工作者数量，默认是0。使用多少个子进程来导入数据。设置为0，就是使用主进程来导入数据。注意：这个数字必须是大于等于0的，负数估计会出错。
-    dataloader = torch.utils.data.DataLoader(dataset,batch_size=5, num_workers=4, sampler=train_sampler)
+    dataloader = torch.utils.data.DataLoader(dataset,batch_size=5, num_workers=5, sampler=train_sampler)
 
     print("success dataloader")
 
     for epoch in range(2):
-        print(f"local_rank-{local_rank}-epoch-{epoch}")
+        # print(f"local_rank-{local_rank}-epoch-{epoch}")
         # DDP：设置sampler的epoch，
         # DistributedSampler需要这个来指定shuffle方式，
         # 通过维持各个进程之间的相同随机数种子使不同进程能获得同样的shuffle效果。
