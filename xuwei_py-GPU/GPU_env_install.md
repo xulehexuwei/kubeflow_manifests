@@ -1,4 +1,4 @@
-# NVIDIA A40 安装CUDA11.2+CUDNN8.1.1
+# NVIDIA A40 安装CUDA11.4+CUDNN8.2.4.15
 
 ## 1- 本文参考
 
@@ -52,9 +52,13 @@ cuDNN 可加速广泛应用的深度学习框架，包括 Caffe2、Chainer、Ker
 ## 2- 下载链接
 
 [驱动 GPU driver 下载](https://www.nvidia.com/download/index.aspx)
+
 [cuda下载](https://developer.nvidia.com/cuda-toolkit-archive)
+
 [cudnn下载](https://developer.nvidia.com/rdp/cudnn-archive)
+
 [nccl下载](https://developer.nvidia.com/nccl/nccl-download)
+
 [nccl 对应支持的cuda版本 下载](https://docs.nvidia.com/deeplearning/nccl/release-notes/rel_2-11-4.html#rel_2-11-4)
 
 ## 3- 安装

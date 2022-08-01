@@ -14,14 +14,6 @@ class MyDataset(torch.utils.data.Dataset):
 
         with open(data_path, "r") as f:
             self.data = f.read().splitlines()
-            # 如果这里都爆内存的话，
-            # 看起来只能使用文件指针，在getitem里边逐行读取了
-            # 得到的data是 list[str]
-        self.data_gen = self.get_data()
-
-    def get_data(self):
-        for idx, val in enumerate(self.data):
-            yield idx, val
 
     def __len__(self):
         # 这里返回长度是用于tqdm进度条显示用的
@@ -32,12 +24,7 @@ class MyDataset(torch.utils.data.Dataset):
     def __getitem__(self, idx):
         # 每次使用next函数返回生成器生成的一条数据，此处的idx用不到了
         # return x, y 一般返回这种格式训练集，标注集
-        r = 0
-        for i in range(idx+1):
-            r = next(self.data_gen)
-
-        self.data_gen = self.get_data()
-        return r
+        return {"xw": idx}
 
 
 if __name__ == '__main__':
@@ -63,16 +50,11 @@ if __name__ == '__main__':
 
     print("success dataloader")
 
-    for epoch in range(2):
-        # print(f"local_rank-{local_rank}-epoch-{epoch}")
-        # DDP：设置sampler的epoch，
-        # DistributedSampler需要这个来指定shuffle方式，
-        # 通过维持各个进程之间的相同随机数种子使不同进程能获得同样的shuffle效果。
-        dataloader.sampler.set_epoch(epoch)
-        # 后面这部分，则与原来完全一致了。
-        num = 0
-        for idx, val in dataloader:
-            # TODO 对于大数据集分布式训练，上面自定义的MyDataset可以返回的是数据文件的路径，在这一步处理的时候，拿文件路径去获取文件然后加载到内存中。
-            print(f"local_rank-{local_rank}-epoch-{epoch}-num-{num}-idx-{idx}-val-{val}")
-            num += 1
+    # 后面这部分，则与原来完全一致了。
+    num = 0
+    for idx, val in enumerate(dataloader):
+        # TODO 对于大数据集分布式训练，上面自定义的MyDataset可以返回的是数据文件的路径，在这一步处理的时候，拿文件路径去获取文件然后加载到内存中。
+        print(f"local_rank-{local_rank}-idx-{idx}-val-{val}")
+        print(len(val["xw"]))
+        num += 1
 

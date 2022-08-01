@@ -43,6 +43,8 @@ if __name__ == '__main__':
     # 准备训练数据
     trainLoader = get_dataset()
 
+    print(f"rank-{dist.get_rank()} trainLoader num: {len(trainLoader)}")
+
     import time
     time.sleep(30)
 
