@@ -97,6 +97,17 @@ sudo dpkg -i nvidia-driver-local-repo-ubuntu1804-470.129.06_1.0-1_amd64.deb
 sudo apt update
 ```
 
+如果报错
+
+```shell
+W: GPG error: file:/var/nvidia-driver-local-repo-ubuntu1804-470.129.06  InRelease: The following signatures couldn't be verified because the public key is not available: NO_PUBKEY E18DC41B3CF8BE09
+```
+
+执行下面命令后，重新 `sudo apt update`
+```shell
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E18DC41B3CF8BE09
+```
+
 - 3、显示可用的驱动版本，按推荐的版本安装，推荐的应该就是第二步骤的版本，如下：
 
 ```shell
