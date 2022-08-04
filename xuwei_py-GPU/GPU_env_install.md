@@ -94,18 +94,10 @@ sudo apt update
 
 ```shell
 sudo dpkg -i nvidia-driver-local-repo-ubuntu1804-470.129.06_1.0-1_amd64.deb
+## 上面的命令执行完会提示，一定要执行下面这句，不然 apt update 会报错 W: GPG error: file:/var/nvidia-driver-local-repo-ubuntu1804-470.129.06  InRelease: The following signatures couldn't be verified because the public key is not available: NO_PUBKEY E18DC41B3CF8BE09
+sudo cp /var/nvidia-driver-local-repo-ubuntu1804-470.129.06/nvidia-driver-local-3CF8BE09-keyring.gpg /usr/share/keyrings/
+
 sudo apt update
-```
-
-如果报错
-
-```shell
-W: GPG error: file:/var/nvidia-driver-local-repo-ubuntu1804-470.129.06  InRelease: The following signatures couldn't be verified because the public key is not available: NO_PUBKEY E18DC41B3CF8BE09
-```
-
-执行下面命令后，重新 `sudo apt update`
-```shell
-sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E18DC41B3CF8BE09
 ```
 
 - 3、显示可用的驱动版本，按推荐的版本安装，推荐的应该就是第二步骤的版本，如下：
@@ -133,27 +125,38 @@ sudo nvidia-smi
 
 `至此，驱动安装完成。`
 
+#### 卸载驱动
+
+```shell
+sudo apt-get --purge remove nvidia*
+sudo apt-get --purge remove "*cublas*" "cuda*"
+sudo apt-get --purge remove "*nvidia*"
+sudo apt autoremove
+```
+
+- 然后重装驱动
+
 ### 3.3- 安装cuda
 
 [cuda下载](https://developer.nvidia.com/cuda-toolkit-archive)
 
 ```shell
 # 安装时把驱动去掉，上面安过驱动了，不需要再安装了
-sudo sh cuda_11.2.2_460.32.03_linux.run
+sudo sh cuda_11.4.4_470.82.01_linux.run
 ```
 
 - 安装完配置环境变量，sudo vim ~/.bashrc
 
 ```shell
 
-#export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda-11.2/lib64
-#export PATH=$PATH:/usr/local/cuda-11.2/bin
-#export PATH=/usr/local/cuda-11.2/bin:$PATH
-#export LD_LIBRARY_PATH=/usr/local/cuda-11.2/lib64:$LD_LIBRARY_PATH
+#export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda-11.4/lib64
+#export PATH=$PATH:/usr/local/cuda-11.4/bin
+#export PATH=/usr/local/cuda-11.4/bin:$PATH
+#export LD_LIBRARY_PATH=/usr/local/cuda-11.4/lib64:$LD_LIBRARY_PATH
 
 export CUDA_HOME=$CUDA_HOME:/usr/local/cuda-11.4
-export PATH=/usr/local/cuda-11.2/bin:/usr/local/cuda-11.2/nsight-compute-2020.3.1${PATH:+:${PATH}}
-export LD_LIBRARY_PATH=/usr/local/cuda-11.2/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+export PATH=/usr/local/cuda-11.4/bin:/usr/local/cuda-11.4/nsight-compute-2021.2.2${PATH:+:${PATH}}
+export LD_LIBRARY_PATH=/usr/local/cuda-11.4/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 
 ```
 
@@ -161,14 +164,25 @@ export LD_LIBRARY_PATH=/usr/local/cuda-11.2/lib64${LD_LIBRARY_PATH:+:${LD_LIBRAR
 
 - 想卸载的话，参考：To uninstall the CUDA Toolkit, run cuda-uninstaller in /usr/local/cuda-11.4/bin
 
+
+#### 测试cuda安装是否成功，看延时怎么样
+
+```shell
+cd /usr/local/cuda-11.4/samples/1_Utilities/p2pBandwidthLatencyTest
+
+sudo make
+
+./p2pBandwidthLatencyTest
+```
+
 ### 3.4- 安装cudnn
 
 根据系统版本[下载deb文件](https://developer.nvidia.com/rdp/cudnn-archive)
 
 ```shell
-libcudnn8_8.1.1.33-1+cuda11.2_amd64.deb
-libcudnn8-dev_8.1.1.33-1+cuda11.2_amd64.deb
-libcudnn8-samples_8.1.1.33-1+cuda11.2_amd64.deb
+libcudnn8_8.2.4.15-1+cuda11.4_amd64.deb
+libcudnn8-dev_8.2.4.15-1+cuda11.4_amd64.deb
+libcudnn8-samples_8.2.4.15-1+cuda11.4_amd64.deb
 ```
 
 - 安装
@@ -219,7 +233,11 @@ cat /usr/include/cudnn_version.h | grep CUDNN_MAJOR -A 2
 获得.deb安装文件如：nccl-local-repo-ubuntu1804-2.8.4-cuda11.2_1.0-1_amd64.deb后
 
 ```shell
-sudo dpkg -i nccl-local-repo-ubuntu1804-2.8.4-cuda11.2_1.0-1_amd64.deb  # 安装
+sudo dpkg -i nccl-local-repo-ubuntu1804-2.11.4-cuda11.4_1.0-1_amd64.deb  # 安装
+
+# 根据提示执行下面的命令
+sudo apt-key add /var/nccl-local-repo-ubuntu1804-2.11.4-cuda11.4/7fa2af80.pub
+
 # 如果提示缺少公共CUDA GPG秘钥
 sudo apt-key add /var/nccl-repo-2.8.3-ga-cuda10.2/7fa2af80.pub
 
